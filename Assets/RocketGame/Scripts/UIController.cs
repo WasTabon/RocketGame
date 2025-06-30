@@ -15,7 +15,11 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cargoProtectionText;
     [SerializeField] private TextMeshProUGUI specialAbilityText;
     [SerializeField] private Image iconImage;
+    [SerializeField] private Image speedIconFill;
+    [SerializeField] private Image fuelIconFill;
+    [SerializeField] private Image protectionIconFill;
     
+    [Header("Other Panels")]
     [SerializeField] private TextMeshProUGUI _infoText;
     
     [SerializeField] private RectTransform _infoButton;
@@ -49,6 +53,10 @@ public class UIController : MonoBehaviour
 
         specialAbilityText.text = $"Special: {rocketData.specialAbility}";
         iconImage.sprite = rocketData.icon;
+        
+        speedIconFill.fillAmount = rocketData.speed / 5f;
+        fuelIconFill.fillAmount = rocketData.fuel / 5f;
+        protectionIconFill.fillAmount = rocketData.cargoProtection / 5f;
     }
     
     private void SetupInfoPanel(BuildingData data)
