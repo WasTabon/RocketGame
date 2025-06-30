@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29d20ed52d2807e4b9468c194f63db46, type: 3}
+  m_Name: Plasma
+  m_EditorClassIdentifier: 
+  rocketName: Plasma Dart
+  description: Very fast, but prone to overheating
+  speed: 5
+  fuel: 3
+  cargoProtection: 2
+  specialAbility: Instant take-off
+  icon: {fileID: 0}
