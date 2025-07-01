@@ -8,6 +8,14 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [Header("Mission Info Panel")]
+    [SerializeField] private GameObject missionInfoPanel;
+    [SerializeField] private TextMeshProUGUI missionNameText;
+    [SerializeField] private TextMeshProUGUI missionDescriptionText;
+    [SerializeField] private TextMeshProUGUI missionPlaceText;
+    [SerializeField] private TextMeshProUGUI missionConditionText;
+    [SerializeField] private Image missionIconImage;
+    
     [Header("Rocket Info Panel")]
     [SerializeField] private GameObject rocketInfoPanel;
     [SerializeField] private TextMeshProUGUI rocketNameText;
@@ -90,7 +98,13 @@ public class UIController : MonoBehaviour
 
     public void ShowMissionInfo(MissionData missionData)
     {
-        
+        missionInfoPanel.SetActive(true);
+
+        missionNameText.text = missionData.missionName;
+        missionDescriptionText.text = missionData.description;
+        missionPlaceText.text = missionData.place;
+        missionConditionText.text = $"Condition: {missionData.condiotion}";
+        missionIconImage.sprite = missionData.icon;
     }
     
     private void SetupInfoPanel(BuildingData data)
