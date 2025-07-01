@@ -1,41 +1,52 @@
+using System;
 using UnityEngine;
+
+[System.Serializable]
+public class RocketState
+{
+    public bool isPurchased;
+    public bool isArrived;
+    public RocketData rocketData;
+}
 
 public class RocketHubController : MonoBehaviour
 {
-    private bool _zoomster;
-    private bool _cargo;
-    private bool _plasma;
-    private bool _iron;
-    private bool _quantum;
-    private bool _nimbus;
-    private bool _vortex;
-    private bool _magnetox;
-    private bool _astrovan;
-    private bool _stealth;
+    public static RocketHubController Instance;
+    
+    [SerializeField] private RocketState _astrovan = new RocketState();
+    [SerializeField] private RocketState _cargo = new RocketState();
+    [SerializeField] private RocketState _iron = new RocketState();
+    [SerializeField] private RocketState _magnetox = new RocketState();
+    [SerializeField] private RocketState _nimbus = new RocketState();
+    [SerializeField] private RocketState _plasma = new RocketState();
+    [SerializeField] private RocketState _quantum = new RocketState();
+    [SerializeField] private RocketState _stealth = new RocketState();
+    [SerializeField] private RocketState _vortex = new RocketState();
+    [SerializeField] private RocketState _zoomster = new RocketState();
 
     #region Rockets
+    
+    public RocketState Zoomster => _zoomster;
+    public RocketState Cargo => _cargo;
+    public RocketState Plasma => _plasma;
+    public RocketState Iron => _iron;
+    public RocketState Quantum => _quantum;
+    public RocketState Nimbus => _nimbus;
+    public RocketState Vortex => _vortex;
+    public RocketState Magnetox => _magnetox;
+    public RocketState Astrovan => _astrovan;
+    public RocketState Stealth => _stealth;
 
-    public bool Zoomster => _zoomster;
-    public bool Cargo => _cargo;
-    public bool Plasma => _plasma;
-    public bool Iron => _iron;
-    public bool Quantum => _quantum;
-    public bool Nimbus => _nimbus;
-    public bool Vortex => _vortex;
-    public bool Magnetox => _magnetox;
-    public bool Astrovan => _astrovan;
-    public bool Stealth => _stealth;
-
-    public void SetZoomster(bool value) => _zoomster = value;
-    public void SetCargo(bool value) => _cargo = value;
-    public void SetPlasma(bool value) => _plasma = value;
-    public void SetIron(bool value) => _iron = value;
-    public void SetQuantum(bool value) => _quantum = value;
-    public void SetNimbus(bool value) => _nimbus = value;
-    public void SetVortex(bool value) => _vortex = value;
-    public void SetMagnetox(bool value) => _magnetox = value;
-    public void SetAstrovan(bool value) => _astrovan = value;
-    public void SetStealth(bool value) => _stealth = value;
+    public void SetZoomster(bool purchased, bool arrived) { _zoomster.isPurchased = purchased; _zoomster.isArrived = arrived; }
+    public void SetCargo(bool purchased, bool arrived) { _cargo.isPurchased = purchased; _cargo.isArrived = arrived; }
+    public void SetPlasma(bool purchased, bool arrived) { _plasma.isPurchased = purchased; _plasma.isArrived = arrived; }
+    public void SetIron(bool purchased, bool arrived) { _iron.isPurchased = purchased; _iron.isArrived = arrived; }
+    public void SetQuantum(bool purchased, bool arrived) { _quantum.isPurchased = purchased; _quantum.isArrived = arrived; }
+    public void SetNimbus(bool purchased, bool arrived) { _nimbus.isPurchased = purchased; _nimbus.isArrived = arrived; }
+    public void SetVortex(bool purchased, bool arrived) { _vortex.isPurchased = purchased; _vortex.isArrived = arrived; }
+    public void SetMagnetox(bool purchased, bool arrived) { _magnetox.isPurchased = purchased; _magnetox.isArrived = arrived; }
+    public void SetAstrovan(bool purchased, bool arrived) { _astrovan.isPurchased = purchased; _astrovan.isArrived = arrived; }
+    public void SetStealth(bool purchased, bool arrived) { _stealth.isPurchased = purchased; _stealth.isArrived = arrived; }
 
     #endregion
 
@@ -75,6 +86,14 @@ public class RocketHubController : MonoBehaviour
     public void SetPacifier(bool value) => _pacifier = value;
 
     #endregion
-    
-    
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void ShowAvialibleRockets()
+    {
+        
+    }
 }
