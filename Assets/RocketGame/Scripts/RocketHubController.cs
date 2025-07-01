@@ -38,4 +38,43 @@ public class RocketHubController : MonoBehaviour
     public void SetStealth(bool value) => _stealth = value;
 
     #endregion
+
+    private bool _noodles;
+    private bool _blackMatter;
+    private bool _cryoPet;
+    private bool _interdimensional;
+    private bool _package;
+    private bool _boxShape;
+    private bool _infrared;
+    private bool _laser;
+    private bool _secret;
+    private bool _pacifier;
+
+    #region Missions
+
+    public bool Noodles => _noodles;
+    public bool BlackMatter => _blackMatter;
+    public bool CryoPet => _cryoPet;
+    public bool Interdimensional => _interdimensional;
+    public bool Package => _package;
+    public bool BoxShape => _boxShape;
+    public bool Infrared => _infrared;
+    public bool Laser => _laser;
+    public bool Secret => _secret;
+    public bool Pacifier => _pacifier;
+
+    public void SetNoodles(bool value) => _noodles = value;
+    public void SetBlackMatter(bool value) => _blackMatter = value;
+    public void SetCryoPet(bool value) => _cryoPet = value;
+    public void SetInterdimensional(bool value) => _interdimensional = value;
+    public void SetPackage(bool value) => _package = value;
+    public void SetBoxShape(bool value) => _boxShape = value;
+    public void SetInfrared(bool value) => _infrared = value;
+    public void SetLaser(bool value) => _laser = value;
+    public void SetSecret(bool value) => _secret = value;
+    public void SetPacifier(bool value) => _pacifier = value;
+
+    #endregion
+    
+    
 }
