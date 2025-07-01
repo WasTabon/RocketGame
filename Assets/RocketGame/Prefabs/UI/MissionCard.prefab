@@ -300,7 +300,7 @@ GameObject:
   - component: {fileID: 4437970303397263265}
   - component: {fileID: 8003260359950999020}
   - component: {fileID: 7239012397455561915}
-  - component: {fileID: 1143885076502134272}
+  - component: {fileID: 8921386115201480917}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &1143885076502134272
+--- !u!114 &8921386115201480917
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -418,10 +418,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5687105566728230172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299629cc2d6bec840812f2a2f944199f, type: 3}
+  m_Script: {fileID: 11500000, guid: fe58d68902c6ed54a9e9e87fb83c3c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rocketData: {fileID: 0}
+  _missionData: {fileID: 0}
 --- !u!1 &8466692569058436880
 GameObject:
   m_ObjectHideFlags: 0

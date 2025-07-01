@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa662ece57a1132458a3157fcf15fb82, type: 3}
+  m_Name: Laser Keyboard
+  m_EditorClassIdentifier: 
+  missionName: Infrared Sausages
+  description: A musician from Techno-V demands flawless delivery of her instrument.
+  place: Oscillator-12, Concert Dome
+  goodDeliver: She writes a song about you. You gain fans on six planets.
+  badDeliver: The keys scramble in transit. She throws it into space, live on camera.
+  condiotion: Magnetic cargo, requires precision
+  icon: {fileID: 0}

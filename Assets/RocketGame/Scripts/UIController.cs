@@ -87,6 +87,11 @@ public class UIController : MonoBehaviour
         fuelIconFill.fillAmount = rocketData.fuel / 5f;
         protectionIconFill.fillAmount = rocketData.cargoProtection / 5f;
     }
+
+    public void ShowMissionInfo(MissionData missionData)
+    {
+        
+    }
     
     private void SetupInfoPanel(BuildingData data)
     {

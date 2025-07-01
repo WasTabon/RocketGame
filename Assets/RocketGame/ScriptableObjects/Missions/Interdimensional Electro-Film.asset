@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa662ece57a1132458a3157fcf15fb82, type: 3}
+  m_Name: Interdimensional Electro-Film
+  m_EditorClassIdentifier: 
+  missionName: Interdimensional Electro-Film
+  description: "Special film for warp drives\u2014one zap and it's useless."
+  place: Technotronic V, Data Gate
+  goodDeliver: Flawless delivery earns you a premium tech pass.
+  badDeliver: Film discharges in transit, fries the destination's core relay
+  condiotion: Avoid electric fields
+  icon: {fileID: 0}
