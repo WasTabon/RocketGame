@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,20 +27,47 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform _infoButton;
     [SerializeField] private RectTransform _infoPanel;
     [SerializeField] private RectTransform _rocketHubPanel;
+    [SerializeField] private RectTransform _nextButton;
 
     private BuildingData _currentBuildingData;
+
+    private List<RectTransform> _panels;
+    private int _currentPanel;
     
     private void Awake()
     {
         Instance = this;
     }
-    
+
+    private void Start()
+    {
+        _panels = new List<RectTransform>();
+    }
+
     public void ShowInfoButton(BuildingData data)
     {
         _currentBuildingData = data;
         _infoButton.gameObject.SetActive(true);
     }
 
+    public void MoveToNextPanel()
+    {
+        if (_panels[_currentPanel + 1] != null)
+        {
+            _panels[_currentPanel].gameObject.SetActive(false);
+            _panels[_currentPanel + 1].gameObject.SetActive(true);
+            _currentPanel++;
+        }
+    }
+    public void MoveToPreviousPanel()
+    {
+        if (_panels[_currentPanel - 1] != null)
+        {
+            _panels[_currentPanel].gameObject.SetActive(false);
+            _panels[_currentPanel - 1].gameObject.SetActive(true);
+            _currentPanel--;
+        }
+    }
     
     public void ShowRocketInfo(RocketData rocketData)
     {
@@ -63,8 +92,19 @@ public class UIController : MonoBehaviour
     {
         _infoPanel.gameObject.SetActive(true);
         if (data.buildingType == BuildingType.RocketHub)
-            _rocketHubPanel.gameObject.SetActive(true);
-        if (data.buildingType == BuildingType.RocketHub)
-            _rocketHubPanel.gameObject.SetActive(true);
+        {
+            _panels.Clear();
+            _currentPanel = 0;
+            _panels.Add(_rocketHubPanel);
+        }
+
+        if (_panels.Count <= 0)
+        {
+            _nextButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _nextButton.gameObject.SetActive(false);
+        }
     }
 }
