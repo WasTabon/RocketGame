@@ -125,6 +125,24 @@ public class UIController : MonoBehaviour
             cardName.text = rocketState.rocketData.rocketName;
         }
     }
+
+    public void HideAcceptMission()
+    {
+        
+    }
+
+    public void BuyRocket(GameObject button)
+    {
+        RocketButton rocketButton = button.GetComponentInChildren<RocketButton>();
+        RocketData rocketData = rocketButton.rocketData;
+        foreach (RocketState rocket in RocketHubController.Instance.allRockets)
+        {
+            if (rocket.rocketData == rocketData)
+            {
+                RocketHubController.Instance.BuyRocket(rocket);
+            }
+        }
+    }
     
     private void SetupInfoPanel(BuildingData data)
     {

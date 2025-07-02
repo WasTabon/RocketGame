@@ -17,4 +17,7 @@ public class RocketData : ScriptableObject
     [Header("Визуал")] public Sprite icon;
 
     public RectTransform locked;
+
+    public GameObject rocketPrefab;
+    public GameObject platform;
 }

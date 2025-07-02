@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 public class RocketState
@@ -18,6 +19,7 @@ public class RocketHubController : MonoBehaviour
 
     public event Action<RocketState, MissionData> OnMissionAssigned;
     public event Action<RocketState, MissionData> OnMissionCompleted;
+    public event Action<RocketState> OnRocketBuy;
 
     [SerializeField] private RocketState _astrovan = new RocketState();
     [SerializeField] private RocketState _cargo = new RocketState();
@@ -30,7 +32,9 @@ public class RocketHubController : MonoBehaviour
     [SerializeField] private RocketState _vortex = new RocketState();
     [SerializeField] private RocketState _zoomster = new RocketState();
 
-    private List<RocketState> _allRockets;
+    public List<RocketState> allRockets;
+    
+    private Dictionary<RocketData, GameObject> _spawnedRockets = new();
 
     #region Rockets
 
@@ -58,7 +62,7 @@ public class RocketHubController : MonoBehaviour
 
     #endregion
 
-    #region
+    #region Missions
     private bool _noodles;
     private bool _blackMatter;
     private bool _cryoPet;
@@ -86,26 +90,75 @@ public class RocketHubController : MonoBehaviour
     {
         Instance = this;
 
-        _allRockets = new List<RocketState>
+        allRockets = new List<RocketState>
         {
-            _astrovan,
-            _cargo,
-            _iron,
-            _magnetox,
-            _nimbus,
-            _plasma,
-            _quantum,
-            _stealth,
-            _vortex,
-            _zoomster
+            _astrovan, _cargo, _iron, _magnetox, _nimbus,
+            _plasma, _quantum, _stealth, _vortex, _zoomster
         };
+
+        LoadRocketStates();
+        UpdateRocketVisualLocks();
+    }
+
+    public void BuyRocket(RocketState rocket)
+    {
+        Debug.Log("Rocket buyed");
+        rocket.isPurchased = true;
+
+        if (rocket.rocketData.locked != null)
+            rocket.rocketData.locked.gameObject.SetActive(false);
+
+        //SpawnRocketOnPlatform(rocket);
+
+        OnRocketBuy?.Invoke(rocket);
+        SaveRocketStates();
+    }
+
+    public void UpdateRocketVisualLocks()
+    {
+        foreach (var rocket in allRockets)
+        {
+            if (rocket.rocketData.locked != null)
+                rocket.rocketData.locked.gameObject.SetActive(!rocket.isPurchased);
+        }
+    }
+
+    public void SaveRocketStates()
+    {
+        foreach (var rocket in allRockets)
+        {
+            PlayerPrefs.SetInt("Rocket_" + rocket.rocketData.rocketName + "_purchased", rocket.isPurchased ? 1 : 0);
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void LoadRocketStates()
+    {
+        foreach (var rocket in allRockets)
+        {
+            string key = "Rocket_" + rocket.rocketData.rocketName + "_purchased";
+            
+            Debug.Log($"Key: {key}");
+
+            if (PlayerPrefs.HasKey(key))
+            {
+                Debug.Log("exist");
+                rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
+            }
+            else
+            {
+                Debug.Log("zoomster");
+                rocket.isPurchased = (rocket == _zoomster);
+            }
+        }
     }
 
     public List<RocketState> GetAvialibleRockets()
     {
         List<RocketState> available = new List<RocketState>();
 
-        foreach (var rocket in _allRockets)
+        foreach (var rocket in allRockets)
         {
             if (rocket.isPurchased && !rocket.isArrived)
                 available.Add(rocket);
@@ -131,5 +184,43 @@ public class RocketHubController : MonoBehaviour
         rocket.assignedMission = null;
 
         OnMissionCompleted?.Invoke(rocket, mission);
+    }
+    
+    private void SpawnRocketOnPlatform(RocketState rocket)
+    {
+        if (rocket.rocketData.rocketPrefab == null || rocket.rocketData.platform == null)
+        {
+            Debug.LogWarning($"Rocket prefab or platform not set for {rocket.rocketData.rocketName}");
+            return;
+        }
+
+        // Инстанцируем объект
+        GameObject rocketInstance = Instantiate(rocket.rocketData.rocketPrefab);
+
+        // Найдём нижнюю точку ракеты
+        Renderer rocketRenderer = rocketInstance.GetComponentInChildren<Renderer>();
+        Renderer platformRenderer = rocket.rocketData.platform.GetComponentInChildren<Renderer>();
+
+        if (rocketRenderer == null || platformRenderer == null)
+        {
+            Debug.LogWarning("Missing renderer on rocket or platform");
+            return;
+        }
+
+        // Получим границы
+        Bounds rocketBounds = rocketRenderer.bounds;
+        Bounds platformBounds = platformRenderer.bounds;
+
+        float rocketBottomY = rocketBounds.min.y;
+        float platformTopY = platformBounds.max.y;
+
+        Vector3 offset = new Vector3(0, platformTopY - rocketBottomY, 0);
+        rocketInstance.transform.position = rocket.rocketData.platform.transform.position + offset;
+
+        // Сохраняем инстанс
+        if (_spawnedRockets.ContainsKey(rocket.rocketData))
+            Destroy(_spawnedRockets[rocket.rocketData]);
+
+        _spawnedRockets[rocket.rocketData] = rocketInstance;
     }
 }
