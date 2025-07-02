@@ -422,6 +422,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _missionData: {fileID: 0}
+  _timerBackground: {fileID: 697681817259745633}
+  _timerText: {fileID: 6666796303380032503}
 --- !u!1 &8466692569058436880
 GameObject:
   m_ObjectHideFlags: 0

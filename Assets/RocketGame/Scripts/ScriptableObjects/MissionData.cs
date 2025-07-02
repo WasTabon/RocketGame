@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RocketData", menuName = "RocketPlay/MisionData", order = 0)]
@@ -12,4 +13,7 @@ public class MissionData : ScriptableObject
     [Header("Особенность")] public string condiotion;
 
     [Header("Визуал")] public Sprite icon;
+    
+    public RectTransform timerBackground;
+    public TextMeshProUGUI timerText;
 }

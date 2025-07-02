@@ -344,6 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rocketData: {fileID: 0}
+  _locked: {fileID: 8723352321298265813}
 --- !u!1 &7267368163992179162
 GameObject:
   m_ObjectHideFlags: 0

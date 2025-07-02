@@ -8,6 +8,10 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [Header("Cards")] 
+    [SerializeField] private RectTransform _avialibleRocketCard;
+    [SerializeField] private RectTransform _avialibleRocketContent;
+    
     [Header("Mission Info Panel")]
     [SerializeField] private GameObject missionInfoPanel;
     [SerializeField] private TextMeshProUGUI missionNameText;
@@ -38,6 +42,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform _nextButton;
 
     private BuildingData _currentBuildingData;
+    private MissionData _currentMissionData;
 
     private List<RectTransform> _panels;
     private int _currentPanel;
@@ -98,6 +103,8 @@ public class UIController : MonoBehaviour
 
     public void ShowMissionInfo(MissionData missionData)
     {
+        _currentMissionData = missionData;
+        
         missionInfoPanel.SetActive(true);
 
         missionNameText.text = missionData.missionName;
@@ -105,6 +112,18 @@ public class UIController : MonoBehaviour
         missionPlaceText.text = missionData.place;
         missionConditionText.text = $"Condition: {missionData.condiotion}";
         missionIconImage.sprite = missionData.icon;
+    }
+
+    public void ShowAcceptMission()
+    {
+        List<RocketState> rockets = RocketHubController.Instance.GetAvialibleRockets();
+
+        foreach (RocketState rocketState in rockets)
+        {
+            GameObject card = Instantiate(_avialibleRocketCard.gameObject, _avialibleRocketContent);
+            TextMeshProUGUI cardName = card.GetComponentInChildren<TextMeshProUGUI>();
+            cardName.text = rocketState.rocketData.rocketName;
+        }
     }
     
     private void SetupInfoPanel(BuildingData data)

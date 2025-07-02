@@ -10,10 +10,15 @@ using UnityEditor;
 public class MissionButton : MonoBehaviour
 {
     [SerializeField] private MissionData _missionData;
+    [SerializeField] private RectTransform _timerBackground;
+    [SerializeField] private TextMeshProUGUI _timerText;
 
     private void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
+
+        _missionData.timerBackground = _timerBackground;
+        _missionData.timerText = _timerText;
     }
 
     private void OnClick()

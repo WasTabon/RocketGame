@@ -15,4 +15,6 @@ public class RocketData : ScriptableObject
     [Header("Особенность")] public string specialAbility;
 
     [Header("Визуал")] public Sprite icon;
+
+    public RectTransform locked;
 }
