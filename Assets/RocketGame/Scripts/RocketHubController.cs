@@ -108,7 +108,7 @@ public class RocketHubController : MonoBehaviour
         if (rocket.rocketData.locked != null)
             rocket.rocketData.locked.gameObject.SetActive(false);
 
-        //SpawnRocketOnPlatform(rocket);
+        SpawnRocketOnPlatform(rocket);
 
         OnRocketBuy?.Invoke(rocket);
         SaveRocketStates();

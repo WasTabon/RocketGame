@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     public static UIController Instance;
-
+    
+    [SerializeField] private GameObject _avialibleRocketsPanel;
+    
     [Header("Cards")] 
     [SerializeField] private RectTransform _avialibleRocketCard;
     [SerializeField] private RectTransform _avialibleRocketContent;
@@ -123,12 +125,26 @@ public class UIController : MonoBehaviour
             GameObject card = Instantiate(_avialibleRocketCard.gameObject, _avialibleRocketContent);
             TextMeshProUGUI cardName = card.GetComponentInChildren<TextMeshProUGUI>();
             cardName.text = rocketState.rocketData.rocketName;
+            card.GetComponentInChildren<Button>().onClick.AddListener(() => AcceptMission(rocketState));
         }
     }
 
     public void HideAcceptMission()
     {
-        
+        foreach (Transform child in _avialibleRocketContent)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void AcceptMission(RocketState state)
+    {
+        RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
+        HideAcceptMission();
+        _avialibleRocketsPanel.SetActive(false);
+        missionInfoPanel.SetActive(false);
+        _rocketHubPanel.gameObject.SetActive(false);
+        _infoPanel.gameObject.SetActive(false);
     }
 
     public void BuyRocket(GameObject button)
