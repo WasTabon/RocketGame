@@ -19,3 +19,6 @@ MonoBehaviour:
   cargoProtection: 5
   specialAbility: Protective shield
   icon: {fileID: 0}
+  locked: {fileID: 0}
+  rocketPrefab: {fileID: 1642897038409435701, guid: e55d7f5e2db9fe94493d15ba2f79ec4a, type: 3}
+  platform: {fileID: 0}

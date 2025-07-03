@@ -19,3 +19,6 @@ MonoBehaviour:
   cargoProtection: 2
   specialAbility: Instant take-off
   icon: {fileID: 0}
+  locked: {fileID: 0}
+  rocketPrefab: {fileID: 3185829438330981314, guid: 878ba62e9255fab44b6a6c65b088394d, type: 3}
+  platform: {fileID: 0}

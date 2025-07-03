@@ -19,3 +19,6 @@ MonoBehaviour:
   cargoProtection: 2
   specialAbility: Magnetic cargo stabilizer
   icon: {fileID: 0}
+  locked: {fileID: 0}
+  rocketPrefab: {fileID: 5788425004724897486, guid: b456b2515f1ba964da3e09e6fdaf32cc, type: 3}
+  platform: {fileID: 0}

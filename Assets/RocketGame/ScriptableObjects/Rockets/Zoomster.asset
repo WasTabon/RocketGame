@@ -19,3 +19,6 @@ MonoBehaviour:
   cargoProtection: 1
   specialAbility: Light and fast
   icon: {fileID: 0}
+  locked: {fileID: 0}
+  rocketPrefab: {fileID: 86744170196071078, guid: 4a6d01c03557d01468186bc10933383f, type: 3}
+  platform: {fileID: 0}

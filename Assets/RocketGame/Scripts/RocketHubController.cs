@@ -194,10 +194,15 @@ public class RocketHubController : MonoBehaviour
             return;
         }
 
+        // Удаляем старую ракету, если уже есть
+        if (_spawnedRockets.ContainsKey(rocket.rocketData))
+            Destroy(_spawnedRockets[rocket.rocketData]);
+
         // Инстанцируем объект
         GameObject rocketInstance = Instantiate(rocket.rocketData.rocketPrefab);
+        rocketInstance.transform.rotation = rocket.rocketData.platform.transform.rotation;
 
-        // Найдём нижнюю точку ракеты
+        // Получаем рендереры
         Renderer rocketRenderer = rocketInstance.GetComponentInChildren<Renderer>();
         Renderer platformRenderer = rocket.rocketData.platform.GetComponentInChildren<Renderer>();
 
@@ -207,19 +212,29 @@ public class RocketHubController : MonoBehaviour
             return;
         }
 
-        // Получим границы
+        // Границы
         Bounds rocketBounds = rocketRenderer.bounds;
         Bounds platformBounds = platformRenderer.bounds;
 
-        float rocketBottomY = rocketBounds.min.y;
-        float platformTopY = platformBounds.max.y;
+        // Центр платформы по X и Z, верх платформы по Y
+        Vector3 platformTopCenter = new Vector3(
+            platformBounds.center.x,
+            platformBounds.max.y,
+            platformBounds.center.z
+        );
 
-        Vector3 offset = new Vector3(0, platformTopY - rocketBottomY, 0);
-        rocketInstance.transform.position = rocket.rocketData.platform.transform.position + offset;
+        // Центр нижней части ракеты (по Y — низ, по XZ — центр)
+        Vector3 rocketBottomCenter = new Vector3(
+            rocketBounds.center.x,
+            rocketBounds.min.y,
+            rocketBounds.center.z
+        );
 
-        // Сохраняем инстанс
-        if (_spawnedRockets.ContainsKey(rocket.rocketData))
-            Destroy(_spawnedRockets[rocket.rocketData]);
+        // Смещение, чтобы нижняя часть ракеты стала в верх платформы, по центру
+        Vector3 offset = platformTopCenter - rocketBottomCenter;
+
+        // Устанавливаем позицию
+        rocketInstance.transform.position += offset;
 
         _spawnedRockets[rocket.rocketData] = rocketInstance;
     }

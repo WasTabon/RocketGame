@@ -19,3 +19,6 @@ MonoBehaviour:
   cargoProtection: 2
   specialAbility: Fuel-efficient engine
   icon: {fileID: 0}
+  locked: {fileID: 0}
+  rocketPrefab: {fileID: 69860718441849444, guid: 3bfa28811e0d6294eab310ac9ba754b1, type: 3}
+  platform: {fileID: 0}
