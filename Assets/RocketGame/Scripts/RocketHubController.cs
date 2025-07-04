@@ -178,6 +178,8 @@ public class RocketHubController : MonoBehaviour
                 SpawnRocketOnPlatform(rocket);
             }
         }
+        
+        // додати анімацію для кнопки, додати лабораторію і покупку ракет за валюту і попап при місії і винагороди за місії
     }
 
     public List<RocketState> GetAvialibleRockets()
