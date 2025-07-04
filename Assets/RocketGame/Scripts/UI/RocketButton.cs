@@ -18,6 +18,9 @@ public class RocketButton : MonoBehaviour
         {
             rocketData.rocketPrefab = _rocket;
         }
+
+        RocketHubController.Instance._initRockets++;
+        Debug.Log($"Rockets init: {RocketHubController.Instance._initRockets}");
     }
 
     private void ShowRocketInfo()

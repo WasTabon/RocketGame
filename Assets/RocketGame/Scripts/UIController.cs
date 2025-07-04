@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     public static UIController Instance;
 
     [SerializeField] private AudioClip _rocketSound;
+    [SerializeField] private AudioClip _rocketBackSound;
     
     [SerializeField] private GameObject _avialibleRocketsPanel;
     
@@ -48,7 +49,11 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform _rocketHubPanel;
     [SerializeField] private RectTransform _nextButton;
 
+    [SerializeField] private RectTransform _garagePanel;
+
     private Coroutine _activeMissionTimerCoroutine;
+    
+    private Dictionary<MissionData, Coroutine> _activeMissionTimers = new Dictionary<MissionData, Coroutine>();
     
     private Dictionary<GameObject, float> _rocketOriginalY = new Dictionary<GameObject, float>();
     
@@ -143,73 +148,79 @@ public class UIController : MonoBehaviour
     }
 
     public void AcceptMission(RocketState state)
+{
+    Debug.Log("Mission Accepted");
+
+    RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
+    HideAcceptMission();
+    _avialibleRocketsPanel.SetActive(false);
+    missionInfoPanel.SetActive(false);
+    _rocketHubPanel.gameObject.SetActive(false);
+    _infoPanel.gameObject.SetActive(false);
+
+    GameObject rocketObj = state.rocketData.rocketPrefab;
+    if (rocketObj != null)
     {
-        Debug.Log("Mission Accepted");
-
-        RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
-        HideAcceptMission();
-        _avialibleRocketsPanel.SetActive(false);
-        missionInfoPanel.SetActive(false);
-        _rocketHubPanel.gameObject.SetActive(false);
-        _infoPanel.gameObject.SetActive(false);
-
-        // Запоминаем изначальную позицию ракеты по Y
-        GameObject rocketObj = state.rocketData.rocketPrefab;
-        if (rocketObj != null)
-        {
-            if (!_rocketOriginalY.ContainsKey(rocketObj))
-                _rocketOriginalY.Add(rocketObj, rocketObj.transform.position.y);
-        }
-
-        // Включаем таймер UI
-        if (_currentMissionData.timerBackground != null)
-            _currentMissionData.timerBackground.gameObject.SetActive(true);
-
-        // Запускаем таймер
-        if (_activeMissionTimerCoroutine != null)
-            StopCoroutine(_activeMissionTimerCoroutine);
-
-        _activeMissionTimerCoroutine = StartCoroutine(StartMissionTimer(_currentMissionData, rocketObj));
-
-        // Запускаем анимацию запуска
-        StartCoroutine(AnimateMissionLaunch(state));
+        if (!_rocketOriginalY.ContainsKey(rocketObj))
+            _rocketOriginalY.Add(rocketObj, rocketObj.transform.position.y);
     }
 
-    private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
+    // Включаем таймер UI
+    if (_currentMissionData.timerBackground != null)
+        _currentMissionData.timerBackground.gameObject.SetActive(true);
+
+    // Если для этой миссии уже есть запущенный таймер — останавливаем его
+    if (_activeMissionTimers.ContainsKey(_currentMissionData))
     {
-        float timeRemaining = 50f; // 3 минуты
+        StopCoroutine(_activeMissionTimers[_currentMissionData]);
+        _activeMissionTimers.Remove(_currentMissionData);
+    }
 
-        while (timeRemaining > 0f)
-        {
-            int minutes = Mathf.FloorToInt(timeRemaining / 60f);
-            int seconds = Mathf.FloorToInt(timeRemaining % 60f);
+    // Запускаем таймер для этой миссии и запоминаем корутину
+    Coroutine timerCoroutine = StartCoroutine(StartMissionTimer(_currentMissionData, rocketObj));
+    _activeMissionTimers.Add(_currentMissionData, timerCoroutine);
 
-            if (mission.timerText != null)
-                mission.timerText.text = $"{minutes}:{seconds:00}";
+    // Запускаем анимацию запуска
+    StartCoroutine(AnimateMissionLaunch(state));
+}
 
-            timeRemaining -= Time.deltaTime;
-            yield return null;
-        }
+private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
+{
+    float timeRemaining = 50f; // 50 секунд или 3 минуты — поправь по необходимости
 
-        // Финал: выключить фон и обнулить текст
-        if (mission.timerBackground != null)
-            mission.timerBackground.gameObject.SetActive(false);
+    while (timeRemaining > 0f)
+    {
+        int minutes = Mathf.FloorToInt(timeRemaining / 60f);
+        int seconds = Mathf.FloorToInt(timeRemaining % 60f);
 
         if (mission.timerText != null)
-            mission.timerText.text = "0:00";
+            mission.timerText.text = $"{minutes}:{seconds:00}";
 
-        _activeMissionTimerCoroutine = null;
-
-        // Запускаем возврат ракеты вниз
-        if (rocketObj != null && _rocketOriginalY.ContainsKey(rocketObj))
-        {
-            float originalY = _rocketOriginalY[rocketObj];
-            StartCoroutine(ReturnRocketToOriginalHeight(rocketObj, originalY));
-        }
+        timeRemaining -= Time.deltaTime;
+        yield return null;
     }
+
+    // Таймер закончился — выключаем фон и обнуляем текст
+    if (mission.timerBackground != null)
+        mission.timerBackground.gameObject.SetActive(false);
+
+    if (mission.timerText != null)
+        mission.timerText.text = "0:00";
+
+    // Удаляем корутину из словаря, чтобы не засорять
+    _activeMissionTimers.Remove(mission);
+
+    // Возвращаем ракету в исходную позицию по Y
+    if (rocketObj != null && _rocketOriginalY.ContainsKey(rocketObj))
+    {
+        float originalY = _rocketOriginalY[rocketObj];
+        StartCoroutine(ReturnRocketToOriginalHeight(rocketObj, originalY));
+    }
+}
     
     private IEnumerator ReturnRocketToOriginalHeight(GameObject rocketObj, float originalY)
     {
+        MusicController.Instance.PlaySpecificSound(_rocketBackSound);
         float speed = 10f; // скорость возврата вниз (можно регулировать)
         Vector3 pos = rocketObj.transform.position;
 
@@ -219,6 +230,18 @@ public class UIController : MonoBehaviour
             pos.y = Mathf.Max(pos.y - deltaY, originalY);
             rocketObj.transform.position = pos;
             yield return null;
+        }
+        
+        foreach (Transform child in rocketObj.transform)
+        {
+            Debug.Log($"TryingFind Child in {rocketObj.name}, name: {child.name}", child);
+
+            if (child.CompareTag("Particle"))
+            {
+                Debug.Log($"Found: {child.gameObject.name}");
+                child.gameObject.SetActive(false);
+                Debug.Log($"Set true: {child.gameObject.name}");
+            }
         }
     }
     
@@ -326,12 +349,22 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         {
             _currentPanel = 0;
             _nextButton.gameObject.SetActive(false);
+            _rocketHubPanel.gameObject.SetActive(false);
+            _garagePanel.gameObject.SetActive(false);
         }
         else if (data.buildingType == BuildingType.RocketHub)
         {
             _currentPanel = 0;
             _panels.Add(_rocketHubPanel);
             _nextButton.gameObject.SetActive(true);
+            _garagePanel.gameObject.SetActive(false);
+        }
+        else if (data.buildingType == BuildingType.Garage)
+        {
+            _currentPanel = 0;
+            _panels.Add(_garagePanel);
+            _nextButton.gameObject.SetActive(true);
+            _rocketHubPanel.gameObject.SetActive(false);
         }
 
         Debug.Log($"Panels count: {_panels.Count}");

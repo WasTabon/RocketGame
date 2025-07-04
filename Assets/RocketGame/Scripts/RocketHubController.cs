@@ -86,6 +86,8 @@ public class RocketHubController : MonoBehaviour
     public bool Pacifier => _pacifier;
     #endregion
 
+    public int _initRockets;
+
     private void Awake()
     {
         Instance = this;
@@ -96,8 +98,18 @@ public class RocketHubController : MonoBehaviour
             _plasma, _quantum, _stealth, _vortex, _zoomster
         };
 
-        LoadRocketStates();
-        UpdateRocketVisualLocks();
+        //LoadRocketStates();
+        //UpdateRocketVisualLocks();
+    }
+
+    private void Update()
+    {
+        if (_initRockets == 10)
+        {
+            _initRockets++;
+            LoadRocketStates();
+            UpdateRocketVisualLocks();
+        }
     }
 
     public void BuyRocket(RocketState rocket)
@@ -141,7 +153,8 @@ public class RocketHubController : MonoBehaviour
 
             if (PlayerPrefs.HasKey(key))
             {
-                rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
+                //rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
+                BuyRocket(rocket);
             }
             else
             {
@@ -189,9 +202,14 @@ public class RocketHubController : MonoBehaviour
     
     private void SpawnRocketOnPlatform(RocketState rocket)
     {
-        if (rocket.rocketData.rocketPrefab == null || rocket.rocketData.platform == null)
+        if (rocket.rocketData.rocketPrefab == null)
         {
-            Debug.LogWarning($"Rocket prefab or platform not set for {rocket.rocketData.rocketName}");
+            Debug.LogWarning($"Rocket prefab not set for {rocket.rocketData.rocketName}");
+            return;
+        }
+        if (rocket.rocketData.platform == null)
+        {
+            Debug.LogWarning($"Platform prefab not set for {rocket.rocketData.rocketName}");
             return;
         }
 
