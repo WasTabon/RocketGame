@@ -3398,8 +3398,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -7210,6 +7210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1826bcf788fa2854f9cc4bda4be35995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rocketSound: {fileID: 8300000, guid: 5808b6a675c258f44b0371da7e7bbdc5, type: 3}
   _avialibleRocketsPanel: {fileID: 1707484166458026094}
   _avialibleRocketCard: {fileID: 2624157559167325719, guid: eccb24c9a3612ab4db6cb26effb34f5b, type: 3}
   _avialibleRocketContent: {fileID: 8086693239013722094}
@@ -9768,7 +9769,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 518f2b1b944b99f47b93e7f145213ea0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PowerLines.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     public static UIController Instance;
+
+    [SerializeField] private AudioClip _rocketSound;
     
     [SerializeField] private GameObject _avialibleRocketsPanel;
     
@@ -205,12 +208,20 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
     Debug.Log("RocketMoving");
 
     // 5. Двигать ракету вверх по Y до 100
-    float moveUpSpeed = 10f;
-    while (rocketObj.transform.position.y < 100f)
+    MusicController.Instance.PlaySpecificSound(_rocketSound);
+    float totalTime = 10f;
+    float endY = 100f;
+    float moveUpSpeed = (endY - rocketObj.transform.position.y) / totalTime;
+    float timer = 0f;
+
+    while (rocketObj.transform.position.y < endY)
     {
-        rocketObj.transform.position += Vector3.up * moveUpSpeed * Time.deltaTime;
+        float deltaY = moveUpSpeed * Time.deltaTime;
+        rocketObj.transform.position += Vector3.up * deltaY;
+        timer += Time.deltaTime;
         yield return null;
     }
+    
 
     // 6. Включить обратно управление камерой
     if (camController != null)
