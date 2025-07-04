@@ -100,6 +100,9 @@ public class RocketHubController : MonoBehaviour
         
         //LoadRocketStates();
         //UpdateRocketVisualLocks();
+
+        _zoomster.isPurchased = true;
+        _zoomster.isArrived = false;
     }
 
     private void Update()
@@ -130,6 +133,9 @@ public class RocketHubController : MonoBehaviour
     {
         foreach (var rocket in allRockets)
         {
+            if (rocket == _zoomster)
+                continue;
+            
             if (rocket.rocketData.locked != null)
                 rocket.rocketData.locked.gameObject.SetActive(!rocket.isPurchased);
         }
@@ -149,17 +155,27 @@ public class RocketHubController : MonoBehaviour
     {
         foreach (var rocket in allRockets)
         {
+            if (rocket == _zoomster)
+                continue;
+
             string key = "Rocket_" + rocket.rocketData.rocketName + "_purchased";
 
             if (PlayerPrefs.HasKey(key))
             {
-                //rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
-                if (PlayerPrefs.GetInt(key) == 1)
-                    BuyRocket(rocket);
+                rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
             }
             else
             {
                 rocket.isPurchased = (rocket == _zoomster);
+            }
+        }
+
+        // После загрузки данных — заспавни все купленные ракеты
+        foreach (var rocket in allRockets)
+        {
+            if (rocket.isPurchased)
+            {
+                SpawnRocketOnPlatform(rocket);
             }
         }
     }
@@ -222,7 +238,8 @@ public class RocketHubController : MonoBehaviour
         GameObject rocketInstance = Instantiate(rocket.rocketData.rocketPrefab);
         rocketInstance.transform.rotation = rocket.rocketData.platform.transform.rotation;
 
-        rocket.rocketData.rocketPrefab = rocketInstance;
+        //rocket.rocketData.rocketPrefab = rocketInstance;
+        rocket.rocketData.neededRocket = rocketInstance;
 
         // Получаем рендереры
         Renderer rocketRenderer = rocketInstance.GetComponentInChildren<Renderer>();

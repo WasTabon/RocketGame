@@ -158,7 +158,7 @@ public class UIController : MonoBehaviour
     _rocketHubPanel.gameObject.SetActive(false);
     _infoPanel.gameObject.SetActive(false);
 
-    GameObject rocketObj = state.rocketData.rocketPrefab;
+    GameObject rocketObj = state.rocketData.neededRocket;
     if (rocketObj != null)
     {
         if (!_rocketOriginalY.ContainsKey(rocketObj))
@@ -248,7 +248,7 @@ private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
 private IEnumerator AnimateMissionLaunch(RocketState state)
 {
     // 1. Найдём объект ракеты
-    GameObject rocketObj = state.rocketData.rocketPrefab;
+    GameObject rocketObj = state.rocketData.neededRocket;
     if (rocketObj == null)
     {
         Debug.LogWarning("Rocket prefab not found for animation");
