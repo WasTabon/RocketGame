@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -37,6 +38,7 @@ public class UIController : MonoBehaviour
     
     [Header("Other Panels")]
     [SerializeField] private TextMeshProUGUI _infoText;
+    [SerializeField] private TextMeshProUGUI _infoName;
     
     [SerializeField] private RectTransform _infoButton;
     [SerializeField] private RectTransform _infoPanel;
@@ -62,26 +64,21 @@ public class UIController : MonoBehaviour
     public void ShowInfoButton(BuildingData data)
     {
         _currentBuildingData = data;
+        SetupInfoPanel(data);
         _infoButton.gameObject.SetActive(true);
     }
 
     public void MoveToNextPanel()
     {
-        if (_panels[_currentPanel + 1] != null)
-        {
-            _panels[_currentPanel].gameObject.SetActive(false);
-            _panels[_currentPanel + 1].gameObject.SetActive(true);
-            _currentPanel++;
-        }
+        //_panels[0].gameObject.SetActive(false);
+        _panels[1].gameObject.SetActive(true);
+        _currentPanel++;
     }
     public void MoveToPreviousPanel()
     {
-        if (_panels[_currentPanel - 1] != null)
-        {
-            _panels[_currentPanel].gameObject.SetActive(false);
-            _panels[_currentPanel - 1].gameObject.SetActive(true);
-            _currentPanel--;
-        }
+        _panels[1].gameObject.SetActive(false);
+        //_panels[0].gameObject.SetActive(true);
+        _currentPanel--;
     }
     
     public void ShowRocketInfo(RocketData rocketData)
@@ -126,6 +123,7 @@ public class UIController : MonoBehaviour
             TextMeshProUGUI cardName = card.GetComponentInChildren<TextMeshProUGUI>();
             cardName.text = rocketState.rocketData.rocketName;
             card.GetComponentInChildren<Button>().onClick.AddListener(() => AcceptMission(rocketState));
+            Debug.Log($"Mission added tp button {card.gameObject}");
         }
     }
 
@@ -137,15 +135,76 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void AcceptMission(RocketState state)
+   public void AcceptMission(RocketState state)
+{
+    Debug.Log("Mission Accepted");
+    
+    RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
+    HideAcceptMission();
+    _avialibleRocketsPanel.SetActive(false);
+    missionInfoPanel.SetActive(false);
+    _rocketHubPanel.gameObject.SetActive(false);
+    _infoPanel.gameObject.SetActive(false);
+
+    StartCoroutine(AnimateMissionLaunch(state));
+}
+
+private IEnumerator AnimateMissionLaunch(RocketState state)
+{
+    // 1. Найдём объект ракеты
+    GameObject rocketObj = state.rocketData.rocketPrefab;
+    if (rocketObj == null)
     {
-        RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
-        HideAcceptMission();
-        _avialibleRocketsPanel.SetActive(false);
-        missionInfoPanel.SetActive(false);
-        _rocketHubPanel.gameObject.SetActive(false);
-        _infoPanel.gameObject.SetActive(false);
+        Debug.LogWarning("Rocket prefab not found for animation");
+        yield break;
     }
+    
+    Debug.Log("Ienumerator started", rocketObj);
+
+    // 2. Отключим управление камерой
+    Camera mainCamera = Camera.main;
+    TopDownCameraController camController = mainCamera.GetComponent<TopDownCameraController>();
+    if (camController != null)
+        camController.enabled = false;
+
+    // 3. Переместим камеру к ракете (по XZ)
+    Vector3 targetXZ = new Vector3(rocketObj.transform.position.x, mainCamera.transform.position.y, rocketObj.transform.position.z);
+    float moveSpeed = 32f;
+    while (Vector3.Distance(new Vector3(mainCamera.transform.position.x, 0, mainCamera.transform.position.z),
+                            new Vector3(targetXZ.x, 0, targetXZ.z)) > 0.1f)
+    {
+        Vector3 newPos = Vector3.MoveTowards(mainCamera.transform.position, targetXZ, moveSpeed * Time.deltaTime);
+        mainCamera.transform.position = new Vector3(newPos.x, mainCamera.transform.position.y, newPos.z);
+        yield return null;
+    }
+
+    // 4. Включим все дочерние Particle объекты
+    foreach (Transform child in rocketObj.transform)
+    {
+        Debug.Log($"TryingFind Child in {rocketObj.name}, name: {child.name}", child);
+        
+        if (child.CompareTag("Particle"))
+        {
+            Debug.Log($"Found: {child.gameObject.name}");
+            child.gameObject.SetActive(true);
+            Debug.Log($"Set true: {child.gameObject.name}");
+        }
+    }
+    
+    Debug.Log("RocketMoving");
+
+    // 5. Двигать ракету вверх по Y до 100
+    float moveUpSpeed = 10f;
+    while (rocketObj.transform.position.y < 100f)
+    {
+        rocketObj.transform.position += Vector3.up * moveUpSpeed * Time.deltaTime;
+        yield return null;
+    }
+
+    // 6. (опционально) Можно включить камеру обратно
+    if (camController != null)
+        camController.enabled = true;
+}
 
     public void BuyRocket(GameObject button)
     {
@@ -159,13 +218,24 @@ public class UIController : MonoBehaviour
             }
         }
     }
+
+    public void ShowInfoPanel()
+    {
+        _infoPanel.gameObject.SetActive(true);
+    }
     
     private void SetupInfoPanel(BuildingData data)
     {
-        _infoPanel.gameObject.SetActive(true);
-        if (data.buildingType == BuildingType.RocketHub)
+        _panels.Clear();
+        _infoName.text = data.name;
+        _infoText.text = data.buildingInfo;
+        _panels.Add(_infoPanel);
+        if (data.buildingType == BuildingType.Static)
         {
-            _panels.Clear();
+            _currentPanel = 0;
+        }
+        else if (data.buildingType == BuildingType.RocketHub)
+        {
             _currentPanel = 0;
             _panels.Add(_rocketHubPanel);
         }
@@ -176,7 +246,14 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            _nextButton.gameObject.SetActive(false);
+            _nextButton.gameObject.SetActive(true);
+        }
+
+        Debug.Log($"Panels count: {_panels.Count}");
+        
+        foreach (RectTransform panel in _panels)
+        {
+            Debug.Log($"Panel: {panel}", panel.gameObject);
         }
     }
 }

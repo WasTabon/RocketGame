@@ -3,6 +3,8 @@ using UnityEngine.Events;
 
 public class ClickDetector : MonoBehaviour
 {
+    public static ClickDetector Instance;
+    
     [Header("Настройки")]
     public LayerMask clickLayerMask = ~0; // Какие слои обрабатывать (по умолчанию все)
     public UnityEvent<Building> OnBuildingClicked;
@@ -14,6 +16,8 @@ public class ClickDetector : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
+        
 #if UNITY_EDITOR
         touchSupported = false;
 #else
@@ -71,19 +75,20 @@ public class ClickDetector : MonoBehaviour
             if (building != null)
             {
                 OnBuildingClicked?.Invoke(building);
-                Debug.Log($"Click on {building.gameObject.name}", building.gameObject);
+                building.Click();
+                //Debug.Log($"Click on {building.gameObject.name}", building.gameObject);
             }
             else
             {
                 OnEmptyClicked?.Invoke(hit.point);
-                Debug.Log($"Empty click on {hit.point}");
+                //Debug.Log($"Empty click on {hit.point}");
             }
         }
         else
         {
             Vector3 fallbackPoint = ray.origin + ray.direction * 10f;
             OnEmptyClicked?.Invoke(fallbackPoint);
-            Debug.Log($"Empty click in space at {fallbackPoint}");
+            //Debug.Log($"Empty click in space at {fallbackPoint}");
         }
     }
 }

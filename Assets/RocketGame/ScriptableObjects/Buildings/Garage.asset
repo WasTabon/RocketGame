@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970d914354ef58146aa12ac52c9cb08e, type: 3}
+  m_Name: Garage
+  m_EditorClassIdentifier: 
+  buildingName: Garage
+  buildingInfo: Garage - your personal rocket hangar and engineering bay. Browse
+    your current fleet, inspect detailed stats, unlock new ships, and upgrade existing
+    ones. Whether you're expanding your delivery capabilities or fine-tuning performance,
+    the Garage is where every great rocket takes shape.
+  buildingType: 2

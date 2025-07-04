@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970d914354ef58146aa12ac52c9cb08e, type: 3}
+  m_Name: RocketHub
+  m_EditorClassIdentifier: 
+  buildingName: Rocket Hub
+  buildingInfo: "Rocket Hub - your central command center for interstellar deliveries.
+    From here, you can browse available missions, inspect your rocket fleet, assign
+    the perfect vessel, and initiate launches. Fully equipped with mission briefings,
+    fuel checks, and real-time departure control - it\u2019s where every journey
+    begins."
+  buildingType: 1

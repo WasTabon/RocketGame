@@ -138,17 +138,13 @@ public class RocketHubController : MonoBehaviour
         foreach (var rocket in allRockets)
         {
             string key = "Rocket_" + rocket.rocketData.rocketName + "_purchased";
-            
-            Debug.Log($"Key: {key}");
 
             if (PlayerPrefs.HasKey(key))
             {
-                Debug.Log("exist");
                 rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
             }
             else
             {
-                Debug.Log("zoomster");
                 rocket.isPurchased = (rocket == _zoomster);
             }
         }
@@ -174,6 +170,11 @@ public class RocketHubController : MonoBehaviour
 
         OnMissionAssigned?.Invoke(rocket, mission);
         StartCoroutine(CompleteMissionAfterDelay(rocket, mission, 180f));
+    }
+    
+    public GameObject GetSpawnedRocket(RocketData data)
+    {
+        return _spawnedRockets.ContainsKey(data) ? _spawnedRockets[data] : null;
     }
 
     private IEnumerator CompleteMissionAfterDelay(RocketState rocket, MissionData mission, float delaySeconds)
@@ -201,6 +202,8 @@ public class RocketHubController : MonoBehaviour
         // Инстанцируем объект
         GameObject rocketInstance = Instantiate(rocket.rocketData.rocketPrefab);
         rocketInstance.transform.rotation = rocket.rocketData.platform.transform.rotation;
+
+        rocket.rocketData.rocketPrefab = rocketInstance;
 
         // Получаем рендереры
         Renderer rocketRenderer = rocketInstance.GetComponentInChildren<Renderer>();
