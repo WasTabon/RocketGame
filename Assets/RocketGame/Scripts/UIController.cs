@@ -158,7 +158,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         Debug.LogWarning("Rocket prefab not found for animation");
         yield break;
     }
-    
+
     Debug.Log("Ienumerator started", rocketObj);
 
     // 2. Отключим управление камерой
@@ -167,9 +167,20 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
     if (camController != null)
         camController.enabled = false;
 
-    // 3. Переместим камеру к ракете (по XZ)
-    Vector3 targetXZ = new Vector3(rocketObj.transform.position.x, mainCamera.transform.position.y, rocketObj.transform.position.z);
-    float moveSpeed = 32f;
+    // 3. Переместим камеру к ракете так, чтобы ракета была немного выше центра экрана
+    Vector3 rocketPos = rocketObj.transform.position;
+
+    // Смещение камеры назад по направлению взгляда (в плоскости XZ)
+    Vector3 offsetDir = new Vector3(mainCamera.transform.forward.x, 0, mainCamera.transform.forward.z).normalized;
+    float offsetDistance = 30f; // Расстояние смещения — регулируется по вкусу
+
+    Vector3 targetXZ = new Vector3(
+        rocketPos.x,
+        mainCamera.transform.position.y,
+        rocketPos.z
+    ) - offsetDir * offsetDistance;
+
+    float moveSpeed = 100f;
     while (Vector3.Distance(new Vector3(mainCamera.transform.position.x, 0, mainCamera.transform.position.z),
                             new Vector3(targetXZ.x, 0, targetXZ.z)) > 0.1f)
     {
@@ -182,7 +193,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
     foreach (Transform child in rocketObj.transform)
     {
         Debug.Log($"TryingFind Child in {rocketObj.name}, name: {child.name}", child);
-        
+
         if (child.CompareTag("Particle"))
         {
             Debug.Log($"Found: {child.gameObject.name}");
@@ -190,7 +201,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
             Debug.Log($"Set true: {child.gameObject.name}");
         }
     }
-    
+
     Debug.Log("RocketMoving");
 
     // 5. Двигать ракету вверх по Y до 100
@@ -201,7 +212,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         yield return null;
     }
 
-    // 6. (опционально) Можно включить камеру обратно
+    // 6. Включить обратно управление камерой
     if (camController != null)
         camController.enabled = true;
 }
@@ -233,19 +244,12 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         if (data.buildingType == BuildingType.Static)
         {
             _currentPanel = 0;
+            _nextButton.gameObject.SetActive(false);
         }
         else if (data.buildingType == BuildingType.RocketHub)
         {
             _currentPanel = 0;
             _panels.Add(_rocketHubPanel);
-        }
-
-        if (_panels.Count <= 0)
-        {
-            _nextButton.gameObject.SetActive(false);
-        }
-        else
-        {
             _nextButton.gameObject.SetActive(true);
         }
 
