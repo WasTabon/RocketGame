@@ -48,6 +48,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform _rocketHubPanel;
     [SerializeField] private RectTransform _nextButton;
 
+    private Coroutine _activeMissionTimerCoroutine;
+    
+    private Dictionary<GameObject, float> _rocketOriginalY = new Dictionary<GameObject, float>();
+    
     private BuildingData _currentBuildingData;
     private MissionData _currentMissionData;
 
@@ -138,20 +142,58 @@ public class UIController : MonoBehaviour
         }
     }
 
-   public void AcceptMission(RocketState state)
-{
-    Debug.Log("Mission Accepted");
+    public void AcceptMission(RocketState state)
+    {
+        Debug.Log("Mission Accepted");
+
+        RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
+        HideAcceptMission();
+        _avialibleRocketsPanel.SetActive(false);
+        missionInfoPanel.SetActive(false);
+        _rocketHubPanel.gameObject.SetActive(false);
+        _infoPanel.gameObject.SetActive(false);
+
+        // Включаем таймер UI
+        if (_currentMissionData.timerBackground != null)
+            _currentMissionData.timerBackground.gameObject.SetActive(true);
+
+        // Запускаем таймер
+        if (_activeMissionTimerCoroutine != null)
+            StopCoroutine(_activeMissionTimerCoroutine);
     
-    RocketHubController.Instance.AssignMissionToRocket(state, _currentMissionData);
-    HideAcceptMission();
-    _avialibleRocketsPanel.SetActive(false);
-    missionInfoPanel.SetActive(false);
-    _rocketHubPanel.gameObject.SetActive(false);
-    _infoPanel.gameObject.SetActive(false);
+        _activeMissionTimerCoroutine = StartCoroutine(StartMissionTimer(_currentMissionData));
 
-    StartCoroutine(AnimateMissionLaunch(state));
-}
+        // Запускаем анимацию запуска
+        StartCoroutine(AnimateMissionLaunch(state));
+    }
 
+    private IEnumerator StartMissionTimer(MissionData mission)
+    {
+        float timeRemaining = 180f; // 3 минуты
+
+        while (timeRemaining > 0f)
+        {
+            int minutes = Mathf.FloorToInt(timeRemaining / 60f);
+            int seconds = Mathf.FloorToInt(timeRemaining % 60f);
+
+            if (mission.timerText != null)
+                mission.timerText.text = $"{minutes}:{seconds:00}";
+
+            timeRemaining -= Time.deltaTime;
+            yield return null;
+        }
+
+        // Финал: выключить фон
+        if (mission.timerBackground != null)
+            mission.timerBackground.gameObject.SetActive(false);
+
+        // Безопасно: обнулить текст
+        if (mission.timerText != null)
+            mission.timerText.text = "0:00";
+
+        _activeMissionTimerCoroutine = null;
+    }
+    
 private IEnumerator AnimateMissionLaunch(RocketState state)
 {
     // 1. Найдём объект ракеты
