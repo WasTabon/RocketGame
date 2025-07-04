@@ -97,14 +97,6 @@ public class RocketHubController : MonoBehaviour
             _astrovan, _cargo, _iron, _magnetox, _nimbus,
             _plasma, _quantum, _stealth, _vortex, _zoomster
         };
-
-        foreach (RocketState rocketState in allRockets)
-        {
-            if (rocketState.rocketData.rocketPrefab != null)
-                rocketState.rocketData.prefabFromAssets = rocketState.rocketData.rocketPrefab;
-            else if (rocketState.rocketData.prefabFromAssets != null)
-                rocketState.rocketData.rocketPrefab = rocketState.rocketData.prefabFromAssets;
-        }
         
         //LoadRocketStates();
         //UpdateRocketVisualLocks();
@@ -288,12 +280,6 @@ public class RocketHubController : MonoBehaviour
 
     void SaveEverything()
     {
-        foreach (RocketState rocketState in allRockets)
-        {
-            if (rocketState.rocketData.rocketPrefab != null)
-                rocketState.rocketData.prefabFromAssets = rocketState.rocketData.rocketPrefab;
-            else if (rocketState.rocketData.prefabFromAssets != null)
-                rocketState.rocketData.rocketPrefab = rocketState.rocketData.prefabFromAssets;
-        }
+        
     }
 }

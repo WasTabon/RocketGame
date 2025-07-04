@@ -21,5 +21,5 @@ public class RocketData : ScriptableObject
     public GameObject rocketPrefab;
     public GameObject platform;
 
-    public GameObject prefabFromAssets;
+    public GameObject neededRocket;
 }
