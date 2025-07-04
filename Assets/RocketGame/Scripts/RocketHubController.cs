@@ -98,6 +98,14 @@ public class RocketHubController : MonoBehaviour
             _plasma, _quantum, _stealth, _vortex, _zoomster
         };
 
+        foreach (RocketState rocketState in allRockets)
+        {
+            if (rocketState.rocketData.rocketPrefab != null)
+                rocketState.rocketData.prefabFromAssets = rocketState.rocketData.rocketPrefab;
+            else if (rocketState.rocketData.prefabFromAssets != null)
+                rocketState.rocketData.rocketPrefab = rocketState.rocketData.prefabFromAssets;
+        }
+        
         //LoadRocketStates();
         //UpdateRocketVisualLocks();
     }
@@ -154,7 +162,8 @@ public class RocketHubController : MonoBehaviour
             if (PlayerPrefs.HasKey(key))
             {
                 //rocket.isPurchased = PlayerPrefs.GetInt(key) == 1;
-                BuyRocket(rocket);
+                if (PlayerPrefs.GetInt(key) == 1)
+                    BuyRocket(rocket);
             }
             else
             {
@@ -258,5 +267,33 @@ public class RocketHubController : MonoBehaviour
         rocketInstance.transform.position += offset;
 
         _spawnedRockets[rocket.rocketData] = rocketInstance;
+    }
+    
+    void OnApplicationQuit()
+    {
+        SaveEverything();
+    }
+
+    void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            SaveEverything();
+    }
+
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+            SaveEverything();
+    }
+
+    void SaveEverything()
+    {
+        foreach (RocketState rocketState in allRockets)
+        {
+            if (rocketState.rocketData.rocketPrefab != null)
+                rocketState.rocketData.prefabFromAssets = rocketState.rocketData.rocketPrefab;
+            else if (rocketState.rocketData.prefabFromAssets != null)
+                rocketState.rocketData.rocketPrefab = rocketState.rocketData.prefabFromAssets;
+        }
     }
 }

@@ -22,3 +22,4 @@ MonoBehaviour:
   locked: {fileID: 0}
   rocketPrefab: {fileID: 6970972353973914188, guid: 22c40e104404aa549ae9d8b69e390ca3, type: 3}
   platform: {fileID: 0}
+  prefabFromAssets: {fileID: 0}
