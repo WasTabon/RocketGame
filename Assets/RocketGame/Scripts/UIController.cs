@@ -153,6 +153,14 @@ public class UIController : MonoBehaviour
         _rocketHubPanel.gameObject.SetActive(false);
         _infoPanel.gameObject.SetActive(false);
 
+        // Запоминаем изначальную позицию ракеты по Y
+        GameObject rocketObj = state.rocketData.rocketPrefab;
+        if (rocketObj != null)
+        {
+            if (!_rocketOriginalY.ContainsKey(rocketObj))
+                _rocketOriginalY.Add(rocketObj, rocketObj.transform.position.y);
+        }
+
         // Включаем таймер UI
         if (_currentMissionData.timerBackground != null)
             _currentMissionData.timerBackground.gameObject.SetActive(true);
@@ -160,16 +168,16 @@ public class UIController : MonoBehaviour
         // Запускаем таймер
         if (_activeMissionTimerCoroutine != null)
             StopCoroutine(_activeMissionTimerCoroutine);
-    
-        _activeMissionTimerCoroutine = StartCoroutine(StartMissionTimer(_currentMissionData));
+
+        _activeMissionTimerCoroutine = StartCoroutine(StartMissionTimer(_currentMissionData, rocketObj));
 
         // Запускаем анимацию запуска
         StartCoroutine(AnimateMissionLaunch(state));
     }
 
-    private IEnumerator StartMissionTimer(MissionData mission)
+    private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
     {
-        float timeRemaining = 180f; // 3 минуты
+        float timeRemaining = 50f; // 3 минуты
 
         while (timeRemaining > 0f)
         {
@@ -183,15 +191,35 @@ public class UIController : MonoBehaviour
             yield return null;
         }
 
-        // Финал: выключить фон
+        // Финал: выключить фон и обнулить текст
         if (mission.timerBackground != null)
             mission.timerBackground.gameObject.SetActive(false);
 
-        // Безопасно: обнулить текст
         if (mission.timerText != null)
             mission.timerText.text = "0:00";
 
         _activeMissionTimerCoroutine = null;
+
+        // Запускаем возврат ракеты вниз
+        if (rocketObj != null && _rocketOriginalY.ContainsKey(rocketObj))
+        {
+            float originalY = _rocketOriginalY[rocketObj];
+            StartCoroutine(ReturnRocketToOriginalHeight(rocketObj, originalY));
+        }
+    }
+    
+    private IEnumerator ReturnRocketToOriginalHeight(GameObject rocketObj, float originalY)
+    {
+        float speed = 10f; // скорость возврата вниз (можно регулировать)
+        Vector3 pos = rocketObj.transform.position;
+
+        while (pos.y > originalY)
+        {
+            float deltaY = speed * Time.deltaTime;
+            pos.y = Mathf.Max(pos.y - deltaY, originalY);
+            rocketObj.transform.position = pos;
+            yield return null;
+        }
     }
     
 private IEnumerator AnimateMissionLaunch(RocketState state)

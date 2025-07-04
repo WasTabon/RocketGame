@@ -169,7 +169,7 @@ public class RocketHubController : MonoBehaviour
         rocket.isArrived = true;
 
         OnMissionAssigned?.Invoke(rocket, mission);
-        StartCoroutine(CompleteMissionAfterDelay(rocket, mission, 180f));
+        StartCoroutine(CompleteMissionAfterDelay(rocket, mission, 50f));
     }
     
     public GameObject GetSpawnedRocket(RocketData data)
