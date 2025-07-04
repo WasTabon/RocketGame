@@ -76,11 +76,13 @@ public class ClickDetector : MonoBehaviour
             {
                 OnBuildingClicked?.Invoke(building);
                 building.Click();
+                UIController.Instance.AnimateShowInfoButton();
                 //Debug.Log($"Click on {building.gameObject.name}", building.gameObject);
             }
             else
             {
                 OnEmptyClicked?.Invoke(hit.point);
+                UIController.Instance.AnimateHideInfoButton();
                 //Debug.Log($"Empty click on {hit.point}");
             }
         }
@@ -88,6 +90,7 @@ public class ClickDetector : MonoBehaviour
         {
             Vector3 fallbackPoint = ray.origin + ray.direction * 10f;
             OnEmptyClicked?.Invoke(fallbackPoint);
+            UIController.Instance.AnimateHideInfoButton();
             //Debug.Log($"Empty click in space at {fallbackPoint}");
         }
     }

@@ -32,6 +32,8 @@ public class RocketHubController : MonoBehaviour
     [SerializeField] private RocketState _vortex = new RocketState();
     [SerializeField] private RocketState _zoomster = new RocketState();
 
+    public int money;
+    
     public List<RocketState> allRockets;
     
     private Dictionary<RocketData, GameObject> _spawnedRockets = new();

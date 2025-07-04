@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using PowerLines.Scripts;
 using TMPro;
 using UnityEngine;
@@ -51,6 +51,10 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private RectTransform _garagePanel;
 
+    private Vector3 _infoButtonOriginalPos;
+    private Vector3 _infoButtonHiddenPos;
+    private Tween _infoButtonTween;
+    
     private Coroutine _activeMissionTimerCoroutine;
     
     private Dictionary<MissionData, Coroutine> _activeMissionTimers = new Dictionary<MissionData, Coroutine>();
@@ -66,6 +70,18 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        // Сохраняем финальную позицию
+        _infoButtonOriginalPos = _infoButton.anchoredPosition;
+
+        // Скрытая позиция — ниже экрана (например, на 200 пикселей вниз)
+        _infoButtonHiddenPos = _infoButtonOriginalPos - new Vector3(0, 200f, 0);
+
+        // Сразу перемещаем кнопку в скрытую позицию
+        _infoButton.anchoredPosition = _infoButtonHiddenPos;
+
+        // Делаем невидимой
+        _infoButton.gameObject.SetActive(false);
     }
 
     private void Start()
@@ -91,6 +107,25 @@ public class UIController : MonoBehaviour
         _panels[1].gameObject.SetActive(false);
         //_panels[0].gameObject.SetActive(true);
         _currentPanel--;
+    }
+    
+    public void AnimateShowInfoButton()
+    {
+        if (_infoButtonTween != null && _infoButtonTween.IsActive()) _infoButtonTween.Kill();
+
+        _infoButton.gameObject.SetActive(true);
+        _infoButton.anchoredPosition = _infoButtonHiddenPos;
+
+        _infoButtonTween = _infoButton.DOAnchorPos(_infoButtonOriginalPos, 0.5f).SetEase(Ease.OutBack);
+    }
+
+    public void AnimateHideInfoButton()
+    {
+        if (_infoButtonTween != null && _infoButtonTween.IsActive()) _infoButtonTween.Kill();
+
+        _infoButtonTween = _infoButton.DOAnchorPos(_infoButtonHiddenPos, 0.4f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() => _infoButton.gameObject.SetActive(false));
     }
     
     public void ShowRocketInfo(RocketData rocketData)
