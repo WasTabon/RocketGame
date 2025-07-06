@@ -198,7 +198,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buy Rocket
+  m_text: 'Buy Rocket
+
+    500$'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -403,6 +405,7 @@ MonoBehaviour:
   rocketData: {fileID: 11400000, guid: d9c88287045ea7547bbf865629fce7ee, type: 2}
   _locked: {fileID: 8723352321298265813}
   _platform: {fileID: 0}
+  _rocket: {fileID: 0}
 --- !u!1 &7267368163992179162
 GameObject:
   m_ObjectHideFlags: 0

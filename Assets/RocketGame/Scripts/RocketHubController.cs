@@ -94,6 +94,8 @@ public class RocketHubController : MonoBehaviour
     {
         Instance = this;
 
+        money = PlayerPrefs.GetInt("money", 500);
+
         allRockets = new List<RocketState>
         {
             _astrovan, _cargo, _iron, _magnetox, _nimbus,

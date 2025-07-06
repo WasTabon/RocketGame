@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -5,15 +6,29 @@ using PowerLines.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [SerializeField] private TextMeshProUGUI _moneyText;
+
+    [SerializeField] private RectTransform _popupNoMoney;
+    
     [SerializeField] private AudioClip _rocketSound;
     [SerializeField] private AudioClip _rocketBackSound;
+    [SerializeField] private AudioClip _winSound;
     
     [SerializeField] private GameObject _avialibleRocketsPanel;
+
+    [Header("Win Panel")] 
+    [SerializeField] private RectTransform _winPanel;
+
+    [SerializeField] private TextMeshProUGUI _missionNameText;
+    [SerializeField] private TextMeshProUGUI _planetText;
+    [SerializeField] private TextMeshProUGUI _winCountText;
+    [SerializeField] private TextMeshProUGUI _descriptionText;
     
     [Header("Cards")] 
     [SerializeField] private RectTransform _avialibleRocketCard;
@@ -87,6 +102,11 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         _panels = new List<RectTransform>();
+    }
+
+    private void Update()
+    {
+        _moneyText.text = $"{RocketHubController.Instance.money}$";
     }
 
     public void ShowInfoButton(BuildingData data)
@@ -249,36 +269,34 @@ private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
     if (rocketObj != null && _rocketOriginalY.ContainsKey(rocketObj))
     {
         float originalY = _rocketOriginalY[rocketObj];
-        StartCoroutine(ReturnRocketToOriginalHeight(rocketObj, originalY));
+        StartCoroutine(ReturnRocketToOriginalHeight(rocketObj, originalY, mission));
     }
 }
     
-    private IEnumerator ReturnRocketToOriginalHeight(GameObject rocketObj, float originalY)
+private IEnumerator ReturnRocketToOriginalHeight(GameObject rocketObj, float originalY, MissionData missionData)
+{
+    MusicController.Instance.PlaySpecificSound(_rocketBackSound);
+    float speed = 10f;
+    Vector3 pos = rocketObj.transform.position;
+
+    while (pos.y > originalY)
     {
-        MusicController.Instance.PlaySpecificSound(_rocketBackSound);
-        float speed = 10f; // скорость возврата вниз (можно регулировать)
-        Vector3 pos = rocketObj.transform.position;
+        float deltaY = speed * Time.deltaTime;
+        pos.y = Mathf.Max(pos.y - deltaY, originalY);
+        rocketObj.transform.position = pos;
+        yield return null;
+    }
 
-        while (pos.y > originalY)
+    foreach (Transform child in rocketObj.transform)
+    {
+        if (child.CompareTag("Particle"))
         {
-            float deltaY = speed * Time.deltaTime;
-            pos.y = Mathf.Max(pos.y - deltaY, originalY);
-            rocketObj.transform.position = pos;
-            yield return null;
-        }
-        
-        foreach (Transform child in rocketObj.transform)
-        {
-            Debug.Log($"TryingFind Child in {rocketObj.name}, name: {child.name}", child);
-
-            if (child.CompareTag("Particle"))
-            {
-                Debug.Log($"Found: {child.gameObject.name}");
-                child.gameObject.SetActive(false);
-                Debug.Log($"Set true: {child.gameObject.name}");
-            }
+            child.gameObject.SetActive(false);
         }
     }
+    
+    SetWinPanel(missionData);
+}
     
 private IEnumerator AnimateMissionLaunch(RocketState state)
 {
@@ -358,17 +376,47 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
 
     public void BuyRocket(GameObject button)
     {
-        RocketButton rocketButton = button.GetComponentInChildren<RocketButton>();
-        RocketData rocketData = rocketButton.rocketData;
-        foreach (RocketState rocket in RocketHubController.Instance.allRockets)
+        if (RocketHubController.Instance.money >= 500)
         {
-            if (rocket.rocketData == rocketData)
+            RocketHubController.Instance.money -= 500;
+            PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
+            PlayerPrefs.Save();
+            RocketButton rocketButton = button.GetComponentInChildren<RocketButton>();
+            RocketData rocketData = rocketButton.rocketData;
+            foreach (RocketState rocket in RocketHubController.Instance.allRockets)
             {
-                RocketHubController.Instance.BuyRocket(rocket);
-            }
+                if (rocket.rocketData == rocketData)
+                {
+                    RocketHubController.Instance.BuyRocket(rocket);
+                }
+            }   
+        }
+        else
+        {
+            _popupNoMoney.gameObject.SetActive(true);
         }
     }
 
+    public void SetWinPanel(MissionData missionData)
+    {
+        int reward = Random.Range(100, 500);
+        RocketHubController.Instance.money += reward;
+        
+        PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
+        PlayerPrefs.Save();
+        
+        _missionNameText.text = missionData.missionName;
+        _planetText.text = missionData.place;
+        _winCountText.text = $"You got {reward}$";
+        
+        bool isGoodDelivery = Random.Range(0, 100) <= 50;
+        descriptionText.text = isGoodDelivery ? missionData.goodDeliver : missionData.badDeliver;
+        
+        _winPanel.gameObject.SetActive(true);
+        if (_winSound != null)
+            MusicController.Instance.PlaySpecificSound(_winSound);
+    }
+    
     public void ShowInfoPanel()
     {
         _infoPanel.gameObject.SetActive(true);
