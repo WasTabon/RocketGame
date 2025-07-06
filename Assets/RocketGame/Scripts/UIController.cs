@@ -144,7 +144,7 @@ public class UIController : MonoBehaviour
         {
             GameObject card = Instantiate(upgradeCardPrefab, contentUpgrades);
 
-            // Найдем первый TMP в дочерних объектах
+            // Найдём первый TMP в дочерних объектах
             TextMeshProUGUI tmp = card.GetComponentInChildren<TextMeshProUGUI>();
             if (tmp != null)
             {
@@ -155,11 +155,14 @@ public class UIController : MonoBehaviour
                 Debug.LogWarning("TMP Text not found in upgrade card prefab");
             }
 
-            // Добавим кнопку на покупку (если на карточке есть Button)
-            Button btn = card.GetComponentInChildren<Button>();
+            // Обязательно замыкаем card в отдельную переменную для лямбды
+            GameObject thisCard = card;
+
+            // Найдём кнопку в дочерних объектах и добавим обработчик покупки
+            Button btn = thisCard.GetComponentInChildren<Button>();
             if (btn != null)
             {
-                btn.onClick.AddListener(() => BuyUpgrade(card));
+                btn.onClick.AddListener(() => BuyUpgrade(thisCard));
             }
             else
             {
