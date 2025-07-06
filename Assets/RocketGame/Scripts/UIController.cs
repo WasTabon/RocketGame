@@ -241,7 +241,7 @@ public class UIController : MonoBehaviour
 
 private IEnumerator StartMissionTimer(MissionData mission, GameObject rocketObj)
 {
-    float timeRemaining = 50f; // 50 секунд или 3 минуты — поправь по необходимости
+    float timeRemaining = 180f; // 50 секунд или 3 минуты — поправь по необходимости
 
     while (timeRemaining > 0f)
     {
@@ -408,9 +408,19 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         _missionNameText.text = missionData.missionName;
         _planetText.text = missionData.place;
         _winCountText.text = $"You got {reward}$";
+
+        int randomDescription = Random.Range(0, 100);
         
-        bool isGoodDelivery = Random.Range(0, 100) <= 50;
-        descriptionText.text = isGoodDelivery ? missionData.goodDeliver : missionData.badDeliver;
+        if (randomDescription <= 50)
+        {
+            _descriptionText.text = missionData.goodDeliver;
+        }
+        else
+        {
+            _descriptionText.text = missionData.badDeliver;
+        }
+        
+        Debug.Log($"Good: {missionData.goodDeliver} Bad: {missionData.badDeliver}");
         
         _winPanel.gameObject.SetActive(true);
         if (_winSound != null)

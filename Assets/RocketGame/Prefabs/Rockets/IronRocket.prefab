@@ -120,6 +120,10 @@ PrefabInstance:
       value: FX_Flame_Booster_Round_01
       objectReference: {fileID: 0}
     - target: {fileID: 1977487533551512413, guid: be9263a55c20e9040b769e02ea8969cf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1977487533551512413, guid: be9263a55c20e9040b769e02ea8969cf, type: 3}
       propertyPath: m_TagString
       value: Particle
       objectReference: {fileID: 0}

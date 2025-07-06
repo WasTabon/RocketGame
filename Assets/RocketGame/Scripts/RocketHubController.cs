@@ -17,6 +17,8 @@ public class RocketHubController : MonoBehaviour
 {
     public static RocketHubController Instance;
 
+    [SerializeField] private GameObject _zoomsterPrefab;
+    
     public event Action<RocketState, MissionData> OnMissionAssigned;
     public event Action<RocketState, MissionData> OnMissionCompleted;
     public event Action<RocketState> OnRocketBuy;
@@ -114,6 +116,7 @@ public class RocketHubController : MonoBehaviour
         if (_initRockets == 10)
         {
             _initRockets++;
+            Destroy(_zoomsterPrefab);
             LoadRocketStates();
             UpdateRocketVisualLocks();
         }
@@ -205,7 +208,7 @@ public class RocketHubController : MonoBehaviour
         rocket.isArrived = true;
 
         OnMissionAssigned?.Invoke(rocket, mission);
-        StartCoroutine(CompleteMissionAfterDelay(rocket, mission, 50f));
+        StartCoroutine(CompleteMissionAfterDelay(rocket, mission, 180f));
     }
     
     public GameObject GetSpawnedRocket(RocketData data)

@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa662ece57a1132458a3157fcf15fb82, type: 3}
   m_Name: Laser Keyboard
   m_EditorClassIdentifier: 
-  missionName: Infrared Sausages
+  missionName: Laser Keyboard
   description: A musician from Techno-V demands flawless delivery of her instrument.
   place: Oscillator-12, Concert Dome
   goodDeliver: She writes a song about you. You gain fans on six planets.
   badDeliver: The keys scramble in transit. She throws it into space, live on camera.
   condiotion: Magnetic cargo, requires precision
   icon: {fileID: 0}
+  timerBackground: {fileID: 0}
+  timerText: {fileID: 0}
