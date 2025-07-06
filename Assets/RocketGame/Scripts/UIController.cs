@@ -144,7 +144,7 @@ public class UIController : MonoBehaviour
         {
             GameObject card = Instantiate(upgradeCardPrefab, contentUpgrades);
 
-            // Найдём первый TMP в дочерних объектах
+            // Установим текст на карточке
             TextMeshProUGUI tmp = card.GetComponentInChildren<TextMeshProUGUI>();
             if (tmp != null)
             {
@@ -155,35 +155,59 @@ public class UIController : MonoBehaviour
                 Debug.LogWarning("TMP Text not found in upgrade card prefab");
             }
 
-            // Обязательно замыкаем card в отдельную переменную для лямбды
-            GameObject thisCard = card;
-
-            // Найдём кнопку в дочерних объектах и добавим обработчик покупки
-            Button btn = thisCard.GetComponentInChildren<Button>();
-            if (btn != null)
+            // Найдём кнопку в дочерних объектах
+            Button btn = card.GetComponentInChildren<Button>();
+            if (btn == null)
             {
-                btn.onClick.AddListener(() => BuyUpgrade(thisCard));
+                Debug.LogWarning("Button not found in upgrade card prefab");
+                continue;
+            }
+
+            // Проверим, был ли куплен апгрейд ранее
+            bool isBought = PlayerPrefs.GetInt("Upgrade_" + upgradeName, 0) == 1;
+
+            if (isBought)
+            {
+                // Скрываем визуальный элемент апгрейда (например, иконку или кнопку)
+                Transform upgradeObj = null;
+                foreach (Transform child in card.transform)
+                {
+                    if (child.CompareTag("Upgrade"))
+                    {
+                        upgradeObj = child;
+                        break;
+                    }
+                }
+
+                if (upgradeObj != null)
+                    upgradeObj.gameObject.SetActive(false);
             }
             else
             {
-                Debug.LogWarning("Button not found in upgrade card prefab");
+                // Создаём локальные копии переменных для лямбды
+                string thisUpgradeName = upgradeName;
+                GameObject thisCard = card;
+
+                // Назначаем обработчик покупки
+                btn.onClick.AddListener(() => BuyUpgrade(thisCard, thisUpgradeName));
             }
         }
 
         _upgradesInitialized = true;
     }
 
-    public void BuyUpgrade(GameObject upgradeCard)
+    public void BuyUpgrade(GameObject upgradeCard, string upgradeName)
     {
-        int upgradeCost = 100; // Можно параметризовать, сейчас условно
+        int upgradeCost = 100;
 
         if (RocketHubController.Instance.money >= upgradeCost)
         {
             RocketHubController.Instance.money -= upgradeCost;
             PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
+            PlayerPrefs.SetInt("Upgrade_" + upgradeName, 1); // 💾 Сохраняем покупку
             PlayerPrefs.Save();
 
-            // Деактивируем дочерний объект с тегом "Upgrade"
+            // Скрываем визуальный элемент апгрейда
             Transform upgradeObj = null;
             foreach (Transform child in upgradeCard.transform)
             {
@@ -199,8 +223,7 @@ public class UIController : MonoBehaviour
             else
                 Debug.LogWarning("No child with tag 'Upgrade' found in upgrade card");
 
-            // Можно добавить логику подтверждения покупки, бонусов и т.п.
-            Debug.Log($"Upgrade bought: {upgradeCard.name}");
+            Debug.Log($"Upgrade bought: {upgradeName}");
         }
         else
         {
