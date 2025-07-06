@@ -12,6 +12,31 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [Header("Upgrade Panel")]
+    [SerializeField] private RectTransform contentUpgrades;
+    [SerializeField] private GameObject upgradeCardPrefab; // Префаб карточки апгрейда с TMP и кнопкой
+
+    private bool _upgradesInitialized = false;
+
+    private readonly string[] upgradeNames = new string[]
+    {
+        "Advanced Fuel Compression",
+        "Automated Launch Sequence",
+        "Enhanced Radar Systems",
+        "Reinforced Hull Plating",
+        "Turbocharger Calibration",
+        "Cargo Bay Expansion",
+        "Emergency Repair Drones",
+        "Thermal Shield Upgrade",
+        "Quantum Navigation Core",
+        "Faster Mission Dispatch",
+        "Defensive Turret AI",
+        "Gravity Stabilizer Field",
+        "Mission Reward Boost",
+        "Engine Preheat Module",
+        "Universal Docking Adapter"
+    };
+    
     [SerializeField] private TextMeshProUGUI _moneyText;
 
     [SerializeField] private RectTransform _popupNoMoney;
@@ -65,6 +90,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private RectTransform _nextButton;
 
     [SerializeField] private RectTransform _garagePanel;
+    [SerializeField] private RectTransform _laboratoryPanel;
 
     private Vector3 _infoButtonOriginalPos;
     private Vector3 _infoButtonHiddenPos;
@@ -102,11 +128,82 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         _panels = new List<RectTransform>();
+        SetupUpgradePanel();
     }
 
     private void Update()
     {
         _moneyText.text = $"{RocketHubController.Instance.money}$";
+    }
+    
+    public void SetupUpgradePanel()
+    {
+        if (_upgradesInitialized) return; // Чтобы не создавать дубли
+
+        foreach (string upgradeName in upgradeNames)
+        {
+            GameObject card = Instantiate(upgradeCardPrefab, contentUpgrades);
+
+            // Найдем первый TMP в дочерних объектах
+            TextMeshProUGUI tmp = card.GetComponentInChildren<TextMeshProUGUI>();
+            if (tmp != null)
+            {
+                tmp.text = upgradeName;
+            }
+            else
+            {
+                Debug.LogWarning("TMP Text not found in upgrade card prefab");
+            }
+
+            // Добавим кнопку на покупку (если на карточке есть Button)
+            Button btn = card.GetComponentInChildren<Button>();
+            if (btn != null)
+            {
+                btn.onClick.AddListener(() => BuyUpgrade(card));
+            }
+            else
+            {
+                Debug.LogWarning("Button not found in upgrade card prefab");
+            }
+        }
+
+        _upgradesInitialized = true;
+    }
+
+    public void BuyUpgrade(GameObject upgradeCard)
+    {
+        int upgradeCost = 100; // Можно параметризовать, сейчас условно
+
+        if (RocketHubController.Instance.money >= upgradeCost)
+        {
+            RocketHubController.Instance.money -= upgradeCost;
+            PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
+            PlayerPrefs.Save();
+
+            // Деактивируем дочерний объект с тегом "Upgrade"
+            Transform upgradeObj = null;
+            foreach (Transform child in upgradeCard.transform)
+            {
+                if (child.CompareTag("Upgrade"))
+                {
+                    upgradeObj = child;
+                    break;
+                }
+            }
+
+            if (upgradeObj != null)
+                upgradeObj.gameObject.SetActive(false);
+            else
+                Debug.LogWarning("No child with tag 'Upgrade' found in upgrade card");
+
+            // Можно добавить логику подтверждения покупки, бонусов и т.п.
+            Debug.Log($"Upgrade bought: {upgradeCard.name}");
+        }
+        else
+        {
+            _popupNoMoney.gameObject.SetActive(true);
+            Debug.Log("Not enough money to buy upgrade");
+        }
     }
 
     public void ShowInfoButton(BuildingData data)
@@ -451,6 +548,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
             _panels.Add(_rocketHubPanel);
             _nextButton.gameObject.SetActive(true);
             _garagePanel.gameObject.SetActive(false);
+            _laboratoryPanel.gameObject.SetActive(false);
         }
         else if (data.buildingType == BuildingType.Garage)
         {
@@ -458,6 +556,15 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
             _panels.Add(_garagePanel);
             _nextButton.gameObject.SetActive(true);
             _rocketHubPanel.gameObject.SetActive(false);
+            _laboratoryPanel.gameObject.SetActive(false);
+        }
+        else if (data.buildingType == BuildingType.Laboratory)
+        {
+            _currentPanel = 0;
+            _panels.Add(_laboratoryPanel);
+            _nextButton.gameObject.SetActive(true);
+            _rocketHubPanel.gameObject.SetActive(false);
+            _garagePanel.gameObject.SetActive(false);
         }
 
         Debug.Log($"Panels count: {_panels.Count}");
