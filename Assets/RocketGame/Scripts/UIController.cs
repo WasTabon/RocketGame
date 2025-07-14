@@ -12,6 +12,10 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [SerializeField] private Image image1;
+    [SerializeField] private Image image2;
+    [SerializeField] private TextMeshProUGUI dynamicText;
+    
     [Header("Upgrade Panel")]
     [SerializeField] private RectTransform contentUpgrades;
     [SerializeField] private GameObject upgradeCardPrefab; // Префаб карточки апгрейда с TMP и кнопкой
@@ -553,6 +557,28 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
     public void ShowInfoPanel()
     {
         _infoPanel.gameObject.SetActive(true);
+
+        Canvas.ForceUpdateCanvases();
+
+        // Временно отключаем перенос и расширяем размер, чтобы точно измерить
+        bool originalWrap = dynamicText.enableWordWrapping;
+        float originalWidth = dynamicText.rectTransform.sizeDelta.x;
+
+        dynamicText.enableWordWrapping = false;
+        dynamicText.rectTransform.sizeDelta = new Vector2(1000f, dynamicText.rectTransform.sizeDelta.y);
+        dynamicText.ForceMeshUpdate();
+
+        float textWidth = dynamicText.preferredWidth;
+
+        // Возвращаем всё как было
+        dynamicText.enableWordWrapping = originalWrap;
+        dynamicText.rectTransform.sizeDelta = new Vector2(originalWidth, dynamicText.rectTransform.sizeDelta.y);
+
+        RectTransform img1Rect = image1.GetComponent<RectTransform>();
+        RectTransform img2Rect = image2.GetComponent<RectTransform>();
+
+        img1Rect.sizeDelta = new Vector2(textWidth + 50f, img1Rect.sizeDelta.y);
+        img2Rect.sizeDelta = new Vector2(textWidth + 50f, img2Rect.sizeDelta.y);
     }
     
     private void SetupInfoPanel(BuildingData data)
