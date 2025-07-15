@@ -282,12 +282,32 @@ public class UIController : MonoBehaviour
         rocketNameText.text = rocketData.rocketName;
         descriptionText.text = rocketData.description;
 
-        speedText.text = $"Speed: {rocketData.speed}/5";
-        fuelText.text = $"Fuel: {rocketData.fuel}/5";
-        cargoProtectionText.text = $"Protection: {rocketData.cargoProtection}/5";
+        speedText.text = $"{rocketData.speed}/5";
+        fuelText.text = $"{rocketData.fuel}/5";
+        cargoProtectionText.text = $"{rocketData.cargoProtection}/5";
 
         specialAbilityText.text = $"Special: {rocketData.specialAbility}";
         iconImage.sprite = rocketData.icon;
+        
+        if (rocketData.icon != null)
+        {
+            float spriteWidth = rocketData.icon.texture.width;
+            float spriteHeight = rocketData.icon.texture.height;
+            float aspectRatio = spriteWidth / spriteHeight;
+
+            RectTransform rt = iconImage.GetComponent<RectTransform>();
+
+            float originalHeight = rt.rect.height;
+            float targetWidth = originalHeight * aspectRatio;
+
+            // Ограничим изменение ширины до ±25% от оригинальной ширины
+            float originalWidth = rt.rect.width;
+            float minWidth = originalWidth * 0.75f;
+            float maxWidth = originalWidth * 1.25f;
+            float clampedWidth = Mathf.Clamp(targetWidth, minWidth, maxWidth);
+
+            rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clampedWidth);
+        }
         
         speedIconFill.fillAmount = rocketData.speed / 5f;
         fuelIconFill.fillAmount = rocketData.fuel / 5f;
