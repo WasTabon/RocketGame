@@ -12,6 +12,8 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
+    [SerializeField] private AudioClip _buyUpgradeSound;
+    
     [SerializeField] private Image image1;
     [SerializeField] private Image image2;
     [SerializeField] private TextMeshProUGUI dynamicText;
@@ -206,6 +208,7 @@ public class UIController : MonoBehaviour
 
         if (RocketHubController.Instance.money >= upgradeCost)
         {
+            MusicController.Instance.PlaySpecificSound(_buyUpgradeSound);
             RocketHubController.Instance.money -= upgradeCost;
             PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
             PlayerPrefs.SetInt("Upgrade_" + upgradeName, 1); // 💾 Сохраняем покупку
