@@ -563,7 +563,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         
         _missionNameText.text = missionData.missionName;
         _planetText.text = missionData.place;
-        _winCountText.text = $"You got {reward}$";
+        _winCountText.text = $"{reward}";
 
         int randomDescription = Random.Range(0, 100);
         
