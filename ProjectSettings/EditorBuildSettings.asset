@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/RocketGame/Scenes/Main.unity
+    guid: 32b5e6ce6115a7c46b6ad089213fd3c4
   m_configObjects: {}
