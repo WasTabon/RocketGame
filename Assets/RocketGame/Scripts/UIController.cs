@@ -539,6 +539,7 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
     {
         if (RocketHubController.Instance.money >= 500)
         {
+            MusicController.Instance.PlaySpecificSound(_buyUpgradeSound);
             RocketHubController.Instance.money -= 500;
             PlayerPrefs.SetInt("money", RocketHubController.Instance.money);
             PlayerPrefs.Save();

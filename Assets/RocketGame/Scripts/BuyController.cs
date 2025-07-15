@@ -6,7 +6,7 @@ using UnityEngine.Purchasing.Extension;
 
 public class BuyController : MonoBehaviour
 {
-    private string _donateId = "com.fanstycoon.inappa1";
+    private string _donateId = "com.rocketpost.pack01";
     
     public GameObject loadingButton;
     public AudioClip buySound;

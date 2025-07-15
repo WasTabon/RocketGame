@@ -11140,7 +11140,7 @@ GameObject:
   - component: {fileID: 1088342490}
   - component: {fileID: 1088342491}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: IAP Buton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11177,7 +11177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: com.fanstycoon.inappa1
+  productId: com.rocketpost.pack01
   buttonType: 0
   consumePurchase: 1
   onTransactionsRestored:
