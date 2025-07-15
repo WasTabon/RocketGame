@@ -1,3 +1,4 @@
+using PowerLines.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -23,6 +24,7 @@ public class MissionButton : MonoBehaviour
 
     private void OnClick()
     {
+        MusicController.Instance.PlayClickSound();
         if (_missionData != null)
             UIController.Instance.ShowMissionInfo(_missionData);
     }

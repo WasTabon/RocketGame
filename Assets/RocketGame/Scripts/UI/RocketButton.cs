@@ -1,3 +1,4 @@
+using PowerLines.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,7 @@ public class RocketButton : MonoBehaviour
 
     private void ShowRocketInfo()
     {
+        MusicController.Instance.PlayClickSound();
         UIController.Instance.ShowRocketInfo(rocketData);
     }
 }

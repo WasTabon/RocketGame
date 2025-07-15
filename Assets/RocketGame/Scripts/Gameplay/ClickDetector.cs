@@ -1,3 +1,4 @@
+using PowerLines.Scripts;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -6,6 +7,8 @@ public class ClickDetector : MonoBehaviour
 {
     public static ClickDetector Instance;
 
+    [SerializeField] private AudioClip _clickSound;
+    
     [Header("Настройки")]
     public LayerMask clickLayerMask = ~0;
     public UnityEvent<Building> OnBuildingClicked;
@@ -91,6 +94,7 @@ public class ClickDetector : MonoBehaviour
             var building = hit.collider.GetComponent<Building>();
             if (building != null)
             {
+                MusicController.Instance.PlaySpecificSound(_clickSound);
                 OnBuildingClicked?.Invoke(building);
                 building.Click();
                 UIController.Instance.AnimateShowInfoButton();
