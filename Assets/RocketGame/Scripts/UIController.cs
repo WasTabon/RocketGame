@@ -493,6 +493,8 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         mainCamera.transform.position = new Vector3(newPos.x, mainCamera.transform.position.y, newPos.z);
         yield return null;
     }
+    
+    camController.enabled = true;
 
     // 4. Включим все дочерние Particle объекты
     foreach (Transform child in rocketObj.transform)
