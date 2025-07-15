@@ -18,8 +18,8 @@ MonoBehaviour:
   fuel: 3
   cargoProtection: 3
   specialAbility: Pirate invisibility
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 364b2e21e76775e4a994170526d5a3d4, type: 3}
   locked: {fileID: 0}
   rocketPrefab: {fileID: 184418403644933521, guid: c0a00c220efdb4e4fb54228b2abf7e59, type: 3}
   platform: {fileID: 0}
-  prefabFromAssets: {fileID: 0}
+  neededRocket: {fileID: 0}

@@ -18,8 +18,8 @@ MonoBehaviour:
   fuel: 3
   cargoProtection: 2
   specialAbility: Short-range teleport
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c9017159cd08d634a9defd7329bf1634, type: 3}
   locked: {fileID: 0}
   rocketPrefab: {fileID: 9166729382701004705, guid: 874786f95f5aa1243874555ccbb00010, type: 3}
   platform: {fileID: 0}
-  prefabFromAssets: {fileID: 0}
+  neededRocket: {fileID: 0}

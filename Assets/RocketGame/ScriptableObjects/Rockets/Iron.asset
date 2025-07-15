@@ -18,8 +18,8 @@ MonoBehaviour:
   fuel: 2
   cargoProtection: 5
   specialAbility: Protective shield
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 47676c6f1d8e4b14fa6b93a60e766776, type: 3}
   locked: {fileID: 0}
   rocketPrefab: {fileID: 1642897038409435701, guid: e55d7f5e2db9fe94493d15ba2f79ec4a, type: 3}
   platform: {fileID: 0}
-  prefabFromAssets: {fileID: 0}
+  neededRocket: {fileID: 0}

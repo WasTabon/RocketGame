@@ -18,8 +18,8 @@ MonoBehaviour:
   fuel: 1
   cargoProtection: 1
   specialAbility: Turbo boost
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0548820e5da99c84593f33f665244ca5, type: 3}
   locked: {fileID: 0}
   rocketPrefab: {fileID: 7917989961721559607, guid: 97b60053c4e004e43b74ab8647bcfb1c, type: 3}
   platform: {fileID: 0}
-  prefabFromAssets: {fileID: 0}
+  neededRocket: {fileID: 0}

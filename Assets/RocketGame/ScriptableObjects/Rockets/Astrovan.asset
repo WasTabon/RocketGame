@@ -18,8 +18,8 @@ MonoBehaviour:
   fuel: 5
   cargoProtection: 4
   specialAbility: Dual cargo support
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c4005007b80519345840ad7d8a91a040, type: 3}
   locked: {fileID: 0}
   rocketPrefab: {fileID: 6970972353973914188, guid: 22c40e104404aa549ae9d8b69e390ca3, type: 3}
   platform: {fileID: 0}
-  prefabFromAssets: {fileID: 0}
+  neededRocket: {fileID: 0}
