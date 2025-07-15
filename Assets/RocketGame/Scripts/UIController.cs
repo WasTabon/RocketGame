@@ -314,6 +314,15 @@ public class UIController : MonoBehaviour
         foreach (RocketState rocketState in rockets)
         {
             GameObject card = Instantiate(_avialibleRocketCard.gameObject, _avialibleRocketContent);
+            Image[] images = card.GetComponentsInChildren<Image>();
+            foreach (Image img in images)
+            {
+                if (img.gameObject != card)
+                {
+                    img.sprite = rocketState.rocketData.icon;
+                    break;
+                }
+            }
             TextMeshProUGUI cardName = card.GetComponentInChildren<TextMeshProUGUI>();
             cardName.text = rocketState.rocketData.rocketName;
             card.GetComponentInChildren<Button>().onClick.AddListener(() => AcceptMission(rocketState));
