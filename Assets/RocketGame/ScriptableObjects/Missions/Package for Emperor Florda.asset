@@ -19,4 +19,6 @@ MonoBehaviour:
   goodDeliver: The emperor blesses your name across the Empire.
   badDeliver: He declares interstellar dishonor. Your company reputation drops.
   condiotion: No bumps or damage allowed
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 529a9d550a684b647974a6793ad3c88a, type: 3}
+  timerBackground: {fileID: 0}
+  timerText: {fileID: 0}

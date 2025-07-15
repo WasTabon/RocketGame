@@ -19,4 +19,6 @@ MonoBehaviour:
   goodDeliver: "Baby stays asleep. You\u2019re hailed as \u201CChampion of Calm.\u201D"
   badDeliver: You bump a meteor. Baby wails. Nursery capsule goes full lockdown.
   condiotion: Must not hit any obstacles
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ec099628fd48be64db2f12c0fd2279a3, type: 3}
+  timerBackground: {fileID: 0}
+  timerText: {fileID: 0}

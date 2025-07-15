@@ -20,4 +20,6 @@ MonoBehaviour:
   badDeliver: "Sausages melt, explode, and set off alarms. You\u2019re banned from
     food runs."
   condiotion: Needs to be fast and kept cool
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: cf673432e290f8742bb6b726df9a3544, type: 3}
+  timerBackground: {fileID: 0}
+  timerText: {fileID: 0}

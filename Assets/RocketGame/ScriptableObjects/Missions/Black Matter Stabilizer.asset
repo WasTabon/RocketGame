@@ -19,4 +19,6 @@ MonoBehaviour:
   badDeliver: "A chain reaction shuts down the station. You\u2019re banned from science
     routes."
   condiotion: No acceleration allowed after 50% of the route
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: f91f3c38d7dcf894fac8c005643b2a6f, type: 3}
+  timerBackground: {fileID: 0}
+  timerText: {fileID: 0}
