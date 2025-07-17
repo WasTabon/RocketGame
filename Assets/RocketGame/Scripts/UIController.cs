@@ -20,6 +20,8 @@ public class UIController : MonoBehaviour
     [Header("Upgrade Panel")]
     [SerializeField] private RectTransform contentUpgrades;
     [SerializeField] private GameObject upgradeCardPrefab; // Префаб карточки апгрейда с TMP и кнопкой
+    
+    private Dictionary<BuildingType, bool> _panelOpenedBefore = new();
 
     private bool _upgradesInitialized = false;
 
@@ -615,49 +617,73 @@ private IEnumerator AnimateMissionLaunch(RocketState state)
         img2Rect.sizeDelta = new Vector2(textWidth + 50f, img2Rect.sizeDelta.y);
     }
     
-    private void SetupInfoPanel(BuildingData data)
-    {
-        _panels.Clear();
-        _infoName.text = data.name;
-        _infoText.text = data.buildingInfo;
-        _panels.Add(_infoPanel);
-        if (data.buildingType == BuildingType.Static)
-        {
-            _currentPanel = 0;
-            _nextButton.gameObject.SetActive(false);
-            _rocketHubPanel.gameObject.SetActive(false);
-            _garagePanel.gameObject.SetActive(false);
-        }
-        else if (data.buildingType == BuildingType.RocketHub)
-        {
-            _currentPanel = 0;
-            _panels.Add(_rocketHubPanel);
-            _nextButton.gameObject.SetActive(true);
-            _garagePanel.gameObject.SetActive(false);
-            _laboratoryPanel.gameObject.SetActive(false);
-        }
-        else if (data.buildingType == BuildingType.Garage)
-        {
-            _currentPanel = 0;
-            _panels.Add(_garagePanel);
-            _nextButton.gameObject.SetActive(true);
-            _rocketHubPanel.gameObject.SetActive(false);
-            _laboratoryPanel.gameObject.SetActive(false);
-        }
-        else if (data.buildingType == BuildingType.Laboratory)
-        {
-            _currentPanel = 0;
-            _panels.Add(_laboratoryPanel);
-            _nextButton.gameObject.SetActive(true);
-            _rocketHubPanel.gameObject.SetActive(false);
-            _garagePanel.gameObject.SetActive(false);
-        }
+   private void SetupInfoPanel(BuildingData data)
+{
+    _panels.Clear();
+    _infoName.text = data.name;
+    _infoText.text = data.buildingInfo;
+    _currentPanel = 0;
 
-        Debug.Log($"Panels count: {_panels.Count}");
-        
-        foreach (RectTransform panel in _panels)
+    // По умолчанию активируем только info
+    _panels.Add(_infoPanel);
+    _infoPanel.gameObject.SetActive(true);
+    _nextButton.gameObject.SetActive(false);
+
+    _rocketHubPanel.gameObject.SetActive(false);
+    _garagePanel.gameObject.SetActive(false);
+    _laboratoryPanel.gameObject.SetActive(false);
+
+    // Проверим, был ли уже открыт этот тип здания
+    bool openedBefore = _panelOpenedBefore.ContainsKey(data.buildingType) && _panelOpenedBefore[data.buildingType];
+
+    // Отметим, что мы теперь открыли его
+    _panelOpenedBefore[data.buildingType] = true;
+
+    RectTransform panelToShow = _infoPanel;
+
+    if (data.buildingType == BuildingType.RocketHub)
+    {
+        _panels.Add(_rocketHubPanel);
+        _nextButton.gameObject.SetActive(true);
+
+        if (openedBefore)
         {
-            Debug.Log($"Panel: {panel}", panel.gameObject);
+            panelToShow = _rocketHubPanel;
+            _currentPanel = 1;
+            _infoPanel.gameObject.SetActive(false);
         }
     }
+    else if (data.buildingType == BuildingType.Garage)
+    {
+        _panels.Add(_garagePanel);
+        _nextButton.gameObject.SetActive(true);
+
+        if (openedBefore)
+        {
+            panelToShow = _garagePanel;
+            _currentPanel = 1;
+            _infoPanel.gameObject.SetActive(false);
+        }
+    }
+    else if (data.buildingType == BuildingType.Laboratory)
+    {
+        _panels.Add(_laboratoryPanel);
+        _nextButton.gameObject.SetActive(true);
+
+        if (openedBefore)
+        {
+            panelToShow = _laboratoryPanel;
+            _currentPanel = 1;
+            _infoPanel.gameObject.SetActive(false);
+        }
+    }
+
+    // Включаем только нужную панель
+    foreach (RectTransform panel in _panels)
+        panel.gameObject.SetActive(panel == panelToShow);
+
+    Debug.Log($"Panels count: {_panels.Count}");
+    foreach (RectTransform panel in _panels)
+        Debug.Log($"Panel: {panel}", panel.gameObject);
+}
 }
