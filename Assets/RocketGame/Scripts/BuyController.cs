@@ -6,7 +6,7 @@ using UnityEngine.Purchasing.Extension;
 
 public class BuyController : MonoBehaviour
 {
-    private string _donateId = "com.rocketpost.pack01";
+    private string _donateId = "com.coidea.forestMatch.full";
     
     public GameObject loadingButton;
     public AudioClip buySound;
